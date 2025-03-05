@@ -36,7 +36,7 @@ const tooltip = d3.select("body").append("div")
     .style("visibility", "hidden");
 
 // Load billionaire data from CSV
-d3.csv("geo.csv").then(data => {
+d3.csv("data/cleaned_forbes_billionaires.csv").then(data => {
     // Parse latitude and longitude from the 'geometry' column
     data.forEach(d => {
         const match = d.geometry.match(/POINT \(([-\d.]+) ([-\d.]+)\)/);
