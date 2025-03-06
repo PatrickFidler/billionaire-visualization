@@ -1,4 +1,6 @@
-
+// Initialize Wealth Comparison
+const wealthApp = new window.WealthComparison('#wealth');
+wealthApp.init();
 let educationVis;
 
 
