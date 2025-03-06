@@ -13,6 +13,7 @@ window.WealthComparison = class WealthComparison {
         this.width = 1000;
         this.height = 1000;
         this.containerGroup = null;
+        this.textGroup = null;
     }
 
     init() {
@@ -69,10 +70,16 @@ window.WealthComparison = class WealthComparison {
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
             .style("border", "1px solid #ccc");
 
-        this.containerGroup = this.svg.append("g");
+
+        this.containerGroup = this.svg.append("g").attr("class", "squares-group");
+
+
+        this.textGroup = this.svg.append("g").attr("class", "labels-group");
+
         this.svg.call(this.zoom);
     }
-    //placeholder data
+
+    // Placeholder data
     loadBillionaires() {
         this.billionaireOptions = [
             { name: "Elon Musk", wealth: 250e9 },
@@ -82,7 +89,7 @@ window.WealthComparison = class WealthComparison {
             { name: "Warren Buffett", wealth: 110e9 }
         ];
 
-        // Populate the dropdown
+
         this.billionaireDropdown
             .selectAll("option")
             .data(this.billionaireOptions)
@@ -95,7 +102,6 @@ window.WealthComparison = class WealthComparison {
     /**
      * wrangleData()
      * - Processes the selected billionaire's wealth.
-     * - Sorts and updates the dataset dynamically.
      * - Calls updateVis() to refresh the visualization.
      */
     wrangleData(userWealth) {
@@ -116,13 +122,12 @@ window.WealthComparison = class WealthComparison {
 
     /**
      * updateVis()
-     * - Clears the visualization and redraws wealth squares.
-     * - Scales based on zoom level.
+     * - Updates the visualization.
      */
     updateVis() {
-        let vis = this;
 
         this.containerGroup.selectAll("*").remove();
+        this.textGroup.selectAll("*").remove();
 
         this.wealthItems.forEach(item => {
             const area = item.wealth / this.conversionFactor;
@@ -141,15 +146,18 @@ window.WealthComparison = class WealthComparison {
                 .datum(item)
                 .append("title")
                 .text(`${item.name}: $${item.wealth.toLocaleString()}`);
+        });
 
-            this.containerGroup.append("text")
+        this.wealthItems.forEach(item => {
+            this.textGroup.append("text")
                 .attr("id", `label-${item.name.replace(/\s+/g, '-')}`)
-                .attr("x", side + 10)
-                .attr("y", 15)
+                .attr("x", 0)
+                .attr("y", 0)
                 .style("fill", "black")
                 .style("font-size", "12px")
                 .style("font-weight", "bold")
-                .text(item.name);
+                .text(item.name)
+                .datum(item);
         });
 
         const userSide = Math.sqrt(this.wealthItems.find(d => d.name === "Your Wealth").wealth / this.conversionFactor);
@@ -164,19 +172,56 @@ window.WealthComparison = class WealthComparison {
             .call(this.zoom.scaleTo, scale);
     }
 
+    /**
+     * updateZoom()
+     * Updates the squares repositions the text labels when zooming
+     */
     updateZoom(scale) {
-        this.containerGroup.selectAll(".wealth-square").each((event, i, nodes) => {
-            const d = d3.select(nodes[i]).datum();
-            const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
 
+        this.containerGroup.selectAll(".wealth-square").each((d, i, nodes) => {
+            const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
             d3.select(nodes[i])
                 .attr("width", side)
                 .attr("height", side);
+        });
 
-            d3.select(`#label-${d.name.replace(/\s+/g, '-')}`)
-                .attr("x", side + 10)
-                .attr("y", Math.max(15, 15 * scale))
-                .style("font-size", `${Math.max(10, 12 * scale)}px`);
+
+        const threshold = 3.98;
+        const threshold0 = 3.99;
+        const threshold1 = 4;
+
+        this.textGroup.selectAll("text").each((d, i, nodes) => {
+            // Calculate the square’s side length based on zoom scale.
+            const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
+            let x, y, fontSize;
+
+            if (scale >= threshold1 ) {
+                x = side;
+                y = Math.max(15, side / 2);
+                fontSize = 15
+            }
+            else if  (scale >= threshold0) {
+                x = side;
+                y = Math.max(15, side / 2);
+                fontSize = Math.max(15, 1 * scale);}
+
+            else if  (scale >= threshold) {
+                x = side;
+                y = Math.max(15, side / 2);
+                fontSize = Math.max(15, 10 * scale); }
+
+             else {
+
+                x = side + 10;
+                const totalLabels = this.wealthItems.length;
+                y = 15 + (totalLabels - 1 - i) * 20;
+                fontSize = 15;
+            }
+
+            d3.select(nodes[i])
+                .attr("x", x)
+                .attr("y", y)
+                .style("font-size", `${fontSize}px`);
         });
     }
 };
