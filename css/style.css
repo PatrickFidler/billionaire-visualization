@@ -1,4 +1,13 @@
+.tooltip {
+    all: unset; /* Reset Bootstrap styles */
+}
 
+/* Style for map container */
+#map {
+    width: 100%;
+    height: 500px;
+    margin-top: 20px;
+}
 h1 {
     text-align: center;
     padding: 0.5em;
