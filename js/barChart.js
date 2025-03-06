@@ -29,17 +29,18 @@ class barChart {
         vis.svg.append('g')
             .attr('class', 'title bar-title')
             .append('text')
-            .text("bar chart title")
+            .text("Normalized Histogram of Billionaires' Highest Attained Education")
             .attr('transform', `translate(${vis.width / 2}, 10)`)
             .attr('text-anchor', 'middle');
 
         // scales
         vis.x = d3.scaleBand()
             .rangeRound([0, vis.width])
-            .paddingInner(0.25)
-            .domain(d3.range(0, 10));
+            .paddingInner(0)
+            .domain(d3.range(0, 5));
 
         vis.y = d3.scaleLinear()
+            .domain([0, 1])
             .range([vis.height, 0]);
 
         // axes
@@ -51,10 +52,12 @@ class barChart {
 
         vis.svg.append("g")
             .attr("class", "x-axis axis")
-            .attr("transform", "translate(0," + vis.height + ")");
+            .attr("transform", "translate(0," + vis.height + ")")
+            .call(vis.xAxis);
 
         vis.svg.append("g")
-            .attr("class", "y-axis axis");
+            .attr("class", "y-axis axis")
+            .call(vis.yAxis);
 
         this.wrangleData();
 
@@ -62,11 +65,58 @@ class barChart {
 
 
     wrangleData() {
+        let vis = this;
 
+        // TODO: Add toggle for education/self-made
+
+        // generate normalized counts by degree
+        vis.counts = d3.rollup(vis.data, leaves => leaves.length, d => d.degree);
+        // console.log(vis.counts);
+        vis.total = d3.sum(vis.counts.values());
+        // console.log(vis.total);
+
+        vis.normalizedCounts = Array.from(vis.counts, ([degree, count]) => ({
+            degree: degree,
+            normalized: count / vis.total
+        }));
+
+        // sort in descending order
+        vis.normalizedCounts.sort((a,b)=> b.normalized - a.normalized);
+        // console.log(vis.normalizedCounts);
+
+        vis.displayData = vis.normalizedCounts;
+
+        this.updateVis();
     }
 
 
     updateVis() {
+        let vis = this;
+
+        // draw bars
+        vis.bars = vis.svg.selectAll("rect")
+            .data(vis.displayData);
+
+        vis.bars.exit().remove();
+
+        vis.bars.enter().append("rect")
+            .merge(vis.bars)
+            .transition()
+            .attr("class", "bar")
+            .attr("x", (d, i) => vis.x(i) )
+            .attr("width", vis.x.bandwidth() )
+            .attr("y", d => vis.y(d.normalized) )
+            .attr("height", d => vis.height - vis.y(d.normalized) );
+
+        // draw bar labels
+        vis.barLabels = vis.svg.select(".x-axis").selectAll("text")
+            .data(vis.displayData)
+
+        vis.barLabels.exit().remove();
+
+        vis.barLabels.enter().append("text")
+            .merge(vis.barLabels)
+            .text(d => d.degree);
 
     }
 

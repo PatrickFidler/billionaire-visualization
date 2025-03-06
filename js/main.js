@@ -23,7 +23,7 @@ Promise.all(promise)
     });
 
 function initMain(data) {
-    console.log(data);
+    console.log(data[0]);
 
-    educationVis = new barChart("education", data);
+    educationVis = new barChart("education", data[0]);
 }
