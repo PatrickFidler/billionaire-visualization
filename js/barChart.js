@@ -94,7 +94,7 @@ class barChart {
         let vis = this;
 
         // draw bars
-        vis.bars = vis.svg.selectAll("rect")
+        vis.bars = vis.svg.selectAll(".bar")
             .data(vis.displayData);
 
         vis.bars.exit().remove();
