@@ -14,7 +14,7 @@ class bubbleChart {
         let vis = this;
 
         // svg margins
-        vis.margin = {top: 40, right: 40, bottom: 40, left: 40};
+        vis.margin = {top: 40, right: 40, bottom: 20, left: 40};
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -27,10 +27,11 @@ class bubbleChart {
 
         // chart title
         vis.svg.append('g')
-            .attr('class', 'title bubble-title')
+            .attr('class', 'title')
+            .attr("id", "bubble-title")
             .append('text')
             .text("Billionaire Industries")
-            .attr('transform', `translate(${vis.width / 2}, -20)`)
+            .attr('transform', `translate(${vis.width / 2}, ${-vis.margin.top/2})`)
             .attr('text-anchor', 'middle');
 
         // scales
@@ -41,43 +42,23 @@ class bubbleChart {
             .range([vis.height, 0]);
 
         vis.r = d3.scaleSqrt()
-            .range([0, 20]);
+            .range([1, 20]);
 
-        // axes
-        // vis.xAxis = d3.axisBottom()
-        //     .scale(vis.x);
-        //
-        // vis.yAxis = d3.axisLeft()
-        //     .scale(vis.y);
-        //
-        // vis.svg.append("g")
-        //     .attr("class", "x-axis axis")
-        //     .attr("transform", "translate(0," + vis.height + ")")
-        //     .call(vis.xAxis);
-        //
-        // vis.svg.append("g")
-        //     .attr("class", "y-axis axis")
-        //     .call(vis.yAxis);
+        // y-axis
+        vis.yAxis = d3.axisLeft()
+            .scale(vis.y);
 
-        // vis.xOrig = vis.x;
-        // vis.yOrig = vis.y;
+        vis.svg.append("g")
+            .attr("class", "y-axis axis")
+            .call(vis.yAxis);
 
-        // vis.zoomed = vis.svg.call(d3.zoom()
-        //     .scaleExtent([1, 20])
-        //     .translateExtent([[0, 0], [vis.width, vis.height]])
-        //     .on("zoom", vis.zoomFunction))
-        //     .append("g");
-
+        // define zoom behavior
         vis.zoomFunction = function(event) {
-            // Update x-scale and x-axis.
-            // vis.x = event.transform.rescaleX(vis.xOrig);
-            // vis.y = event.transform.rescaleY(vis.yOrig);
-            // vis.xAxis.scale(vis.x);
-            // vis.zoomed.attr("transform", event.transform);
-            // vis.updateVis();
             vis.svg.attr("transform", event.transform);
+            // vis.svg.select(".y-axis").call(vis.yAxis.scale(event.transform.rescaleY(vis.y)))
+            // vis.svg.selectAll(".bubble").attr("cy", (d, i) => vis.y(d.count))
 
-        } // function that is being called when user zooms
+        }
 
         vis.zoom = d3.zoom()
             .scaleExtent([1, 20])
@@ -106,20 +87,14 @@ class bubbleChart {
     wrangleData() {
         let vis = this;
 
-        // generate normalized counts by degree
+        // generate counts by industry
         vis.counts = d3.rollup(vis.data, leaves => leaves.length, d => d.Source);
-        // console.log(vis.counts);
-        // vis.total = d3.sum(vis.counts.values());
-        // console.log(vis.total);
 
+        // convert to array
         vis.counts = Array.from(vis.counts, ([source, count]) => ({
             source: source,
             count: count
         }));
-
-        // sort in descending order
-        // vis.normalizedCounts.sort((a,b)=> b.normalized - a.normalized);
-        // console.log(vis.counts);
 
         vis.displayData = vis.counts;
 
@@ -130,7 +105,22 @@ class bubbleChart {
     updateVis() {
         let vis = this;
 
-        // update scales
+        // listen for selected billionaire
+        let selectedSource = "software";
+        eventDispatcher.on("billionaireSelected.industry", function(selected){
+            selectedSource = selected.Source;
+            // console.log("SOURCE:", selectedSource);
+            vis.svg.selectAll(".bubble").attr("fill", (d, i) => {
+                if (d.source === selectedSource) {
+                    return "red"
+                }
+                else {
+                    return "grey"
+                }
+            })
+        })
+
+        // update scales and axis
         vis.y
             .domain([0, d3.max(vis.displayData, d => d.count)])
 
@@ -140,9 +130,13 @@ class bubbleChart {
         vis.r
             .domain([0, d3.max(vis.displayData, d => d.count)])
 
+        vis.svg.select(".y-axis").call(vis.yAxis);
+
         // draw bubbles
         vis.bubbles = vis.svg.selectAll(".bubble")
             .data(vis.displayData);
+
+        vis.bubbles.exit().remove();
 
         vis.bubbles.enter().append("circle")
             .merge(vis.bubbles)
@@ -151,13 +145,15 @@ class bubbleChart {
             .attr("cx", (d, i) => vis.x(
                 d3.randomUniform(0, 100)()
             ))
-            .attr("r", (d, i) => {
-                return vis.r(d.count)
-                // if (d.count < 20) { return 1; }
-                // else { return 10; }
-            } )
+            .attr("r", (d, i) => vis.r(d.count) )
             .attr("cy", (d, i) => vis.y(d.count) )
-            .attr("fill", "black")
+            .attr("fill", (d, i) => {
+                if (d.source === selectedSource) {
+                    return "red";
+                } else {
+                    return "grey";
+                }
+            })
             .on('mouseover', function(event, d){
                 d3.select(this)
                     .attr('fill', 'orange');
@@ -173,7 +169,13 @@ class bubbleChart {
             })
             .on('mouseout', function(event, d){
                 d3.select(this)
-                    .attr("fill", "black")
+                    .attr("fill", d => {
+                        if (d.source === selectedSource) {
+                            return "red";
+                        } else {
+                            return "grey";
+                        }
+                    })
 
                 vis.tooltip
                     .style("opacity", 0)
@@ -181,18 +183,6 @@ class bubbleChart {
                     .style("top", 0)
                     .html(``);
             })
-
-        vis.bubbles.exit().remove();
-
-        // draw bar labels
-        // vis.barLabels = vis.svg.select(".x-axis").selectAll("text")
-        //     .data(vis.displayData)
-        //
-        // vis.barLabels.exit().remove();
-        //
-        // vis.barLabels.enter().append("text")
-        //     .merge(vis.barLabels)
-        //     .text(d => d.degree);
 
     }
 

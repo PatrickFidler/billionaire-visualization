@@ -93,6 +93,21 @@ class barChart {
     updateVis() {
         let vis = this;
 
+        // listen for selected billionaire
+        let selectedDegree = "bachelor";
+        eventDispatcher.on("billionaireSelected.education", function(selected){
+            selectedDegree = selected.degree
+            // console.log("DEGREE:", selectedDegree);
+            vis.svg.selectAll(".bar").attr("fill", (d, i) => {
+                if (d.degree === selectedDegree) {
+                    return "red"
+                }
+                else {
+                    return "grey"
+                }
+            })
+        })
+
         // draw bars
         vis.bars = vis.svg.selectAll(".bar")
             .data(vis.displayData);
@@ -106,7 +121,14 @@ class barChart {
             .attr("x", (d, i) => vis.x(i) )
             .attr("width", vis.x.bandwidth() )
             .attr("y", d => vis.y(d.normalized) )
-            .attr("height", d => vis.height - vis.y(d.normalized) );
+            .attr("height", d => vis.height - vis.y(d.normalized) )
+            .attr("fill", (d, i) => {
+                if (d.degree === selectedDegree) {
+                    return "red";
+                } else {
+                    return "grey";
+                }
+            });
 
         // draw bar labels
         vis.barLabels = vis.svg.select(".x-axis").selectAll("text")
