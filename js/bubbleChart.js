@@ -110,14 +110,23 @@ class bubbleChart {
         eventDispatcher.on("billionaireSelected.industry", function(selected){
             selectedSource = selected.Source;
             // console.log("SOURCE:", selectedSource);
-            vis.svg.selectAll(".bubble").attr("fill", (d, i) => {
-                if (d.source === selectedSource) {
-                    return "red"
-                }
-                else {
-                    return "grey"
-                }
-            })
+            vis.svg.selectAll(".bubble")
+                .attr("fill", (d, i) => {
+                    if (d.source === selectedSource) {
+                        return "red"
+                    }
+                    else {
+                        return "grey"
+                    }
+                })
+                .attr("r", (d, i) => {
+                    if (d.source === selectedSource) {
+                        return 15;
+                    }
+                    else {
+                        return vis.r(d.count);
+                    }
+                })
         })
 
         // update scales and axis
