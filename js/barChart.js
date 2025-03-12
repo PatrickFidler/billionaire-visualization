@@ -124,6 +124,7 @@ class barChart {
                     return "grey"
                 }
             })
+            vis.wrangleData();
         })
 
         // set scales and draw axes
