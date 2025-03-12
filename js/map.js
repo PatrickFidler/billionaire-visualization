@@ -78,6 +78,24 @@ d3.csv("data/cleaned_forbes_billionaires.csv").then(data => {
         })
         .on("click", (event, d) => {
             fetchBillionaireProfile(d);
+            console.log("Billionaire selected (Full Object):", d);
+
+
+            console.log(`Name: ${d.Name}`);
+            console.log(`Net Worth: $${d.NetWorth}B`);
+            console.log(`Country: ${d.Country}`);
+            console.log(`Industry: ${d.Source}`);
+            console.log(`Rank: ${d.Rank}`);
+            console.log(`Age: ${d.Age}`);
+            console.log(`Residence: ${d.Residence}`);
+            console.log(`Citizenship: ${d.Citizenship}`);
+            console.log(`Marital Status: ${d.Status}`);
+            console.log(`Children: ${d.Children}`);
+            console.log(`Self-Made: ${d.Self_made}`);
+            console.log(`Education: ${d.degree}`);
+            console.log(`Coordinates: Latitude ${d.lat}, Longitude ${d.lon}`);
+
+            eventDispatcher.call("billionaireSelected", null, d);
         });
 
     // Update positions of circles when the map is zoomed or moved
@@ -174,7 +192,7 @@ function showPopup(d, photoUrl) {
         <p><strong>Citizenship:</strong> ${d.Citizenship}</p>
         <p><strong>Marital Status:</strong> ${d.Status}</p>
         <p><strong>Children:</strong> ${d.Children}</p>
-        <p><strong>Education:</strong> ${d.Education}</p>
+        <p><strong>Education:</strong> ${d.degree ? d.degree : "N/A"}</p>
         <p><strong>Self-Made:</strong> ${d.Self_made}</p>
         <button id="close-popup" style="display: block; margin-top: 10px; padding: 5px 10px; background: red; color: white; border: none; cursor: pointer;">Close</button>
     `;

@@ -1,7 +1,25 @@
-// Initialize Wealth Comparison
-const wealthApp = new window.WealthComparison('#wealth');
-wealthApp.init();
-let educationVis;
+
+/**
+ * billionaireSelected
+ *
+ *
+ *  (`Name: ${d.Name}`);
+ *  (`Net Worth: $${d.NetWorth}B`);
+ *  (`Country: ${d.Country}`);
+ *  (`Industry: ${d.Source}`);
+ *  (`Rank: ${d.Rank}`);
+ *  (`Age: ${d.Age}`);
+ *  (`Residence: ${d.Residence}`);
+ *  (`Citizenship: ${d.Citizenship}`);
+ *  (`Marital Status: ${d.Status}`);
+ *  (`Children: ${d.Children}`);
+ *  (`Self-Made: ${d.Self_made}`);
+ *  (`Education: ${d.degree}`);
+ *  `Coordinates: Latitude ${d.lat}, Longitude ${d.lon}`);
+ */
+
+// dispatch the billionaire selected
+const eventDispatcher = d3.dispatch("billionaireSelected");
 
 
 let promise = [
@@ -29,3 +47,7 @@ function initMain(data) {
 
     educationVis = new barChart("education", data[0]);
 }
+// Initialize Wealth Comparison
+const wealthApp = new window.WealthComparison('#wealth');
+wealthApp.init();
+let educationVis;
