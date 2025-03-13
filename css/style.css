@@ -48,3 +48,9 @@ h1 {
     width: 80%;
     height: 50vh;
 }
+.arrow {
+    width: 100px;
+    height: auto;
+    display: block;
+    margin: 10px auto;
+}
