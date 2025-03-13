@@ -1765,7 +1765,7 @@ D. Leopoldo Del Pino,1.8,Spain,construction,1750,,,,,,,POINT (-4.8379791 39.3260
 Jamie Dimon,1.8,United States,banking,1750,65,"New York, New York",United States,Married,3,1,POINT (-74.00601519999999 40.7127281),master
 Robert Duggan,1.8,United States,pharmaceutical,1750,77,"Clearwater, Florida",United States,Married,8,1,POINT (-82.8001026 27.9658533),drop out
 Faruk Eczacibasi,1.8,Turkey,"pharmaceutical, diversified",1750,66,"Istanbul, Turkey",Turkey,Married,2,0,POINT (28.9651646 41.0096334),drop out
-N. Murray Edwards,1.8,Canada,oil & gas,1750,,,,,,,POINT (-107.991707 61.0666922),drop out
+N. Murray Edwards,1.8,Canada,oil & gas,1750,65,,Canada,,,,POINT (-107.991707 61.0666922),bachelor
 Anthony Eisen,1.8,Australia,fintech,1750,49,"Melbourne, Australia",Australia,,,1,POINT (144.960964 -37.8077694),bachelor
 Ali Erdemoglu,1.8,Turkey,carpet,1750,61,"Istanbul, Turkey",Turkey,Married,3,1,POINT (28.9651646 41.0096334),drop out
 James France,1.8,United States,"Nascar, racing",1750,76,"Daytona Beach, Florida",United States,Married,3,0,POINT (-81.0228331 29.2108147),bachelor
@@ -1857,7 +1857,7 @@ Ivan Chrenko,1.7,Slovakia,real estate,1833,53,"Bratislava, Slovakia",Slovakia,,,
 Brunello Cucinelli & family,1.7,Italy,fashion,1833,67,"Solomeo, Italy",Italy,Married,2,1,POINT (12.2772146 43.0830922),drop out
 Alexandra Daitch,1.7,United States,food,1833,58,"Old Lyme, Connecticut",United States,,1,0,POINT (-72.32897149999999 41.3159315),drop out
 Henry Engelhardt,1.7,United States,insurance,1833,63,"Cardiff, United Kingdom",United States,Married,4,1,POINT (-3.1791934 51.4816546),master
-Philip Fayer,1.7,Canada,online payments,1833,,,Canada,,,1,POINT (-107.991707 61.0666922),drop out
+Philip Fayer,1.7,Canada,online payments,1833,47,,Canada,,,1,POINT (-107.991707 61.0666922),drop out
 David Feffer,1.7,Brazil,pulp and paper,1833,64,"São Paulo, Brazil",Brazil,Married,,0,POINT (-46.6333824 -23.5506507),drop out
 Paul Foster,1.7,United States,oil refining,1833,63,"El Paso, Texas",United States,Married,2,1,POINT (-106.464634 31.7754152),bachelor
 Bernd Freier,1.7,Germany,fashion retail,1833,64,"Rottendorf, Germany",Germany,Married,2,1,POINT (10.0246112 49.7913804),drop out
@@ -2713,7 +2713,7 @@ Ma Hong,1,China,machinery,2674,53,"Dongguan, China",China,Married,,1,POINT (113.
 Sergei Makhlai,1,Russia,fertilizers,2674,52,"Chapel Hill, North Carolina",Russia,Married,1,0,POINT (-79.05578 35.9131542),master
 Rafique Malik,1,India,footwear,2674,70,"Mumbai, India",India,Married,5,0,POINT (72.8773928 19.0759899),drop out
 Mao Huihua,1,Canada,pharmaceutical,2674,59,"Tianjin, China",Canada,,,1,POINT (117.1951073 39.0856735),drop out
-Michael McCain,1,Canada,packaged meats,2674,,,,,,,POINT (-107.991707 61.0666922),drop out
+Michael McCain,1,Canada,packaged meats,2674,66,,,,,,POINT (-107.991707 61.0666922),drop out
 Mofatraj Munot,1,India,real estate,2674,76,"Mumbai, India",India,Widowed,3,1,POINT (72.8773928 19.0759899),drop out
 Vitaly Orlov,1,Russia,fisheries,2674,56,"Murmansk, Russia",Russia,Married,4,1,POINT (33.07497 68.970665),bachelor
 George Pedersen,1,United States,defense contractor,2674,85,"McLean, Virginia",United States,Married,3,1,POINT (-77.1776327 38.9342888),drop out

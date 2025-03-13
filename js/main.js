@@ -20,6 +20,10 @@
 
 // dispatch the billionaire selected
 const eventDispatcher = d3.dispatch("billionaireSelected");
+eventDispatcher.on("billionaireSelected", function(billionaire) {
+    console.log("Billionaire selected:", billionaire);
+
+});
 
 
 let promise = [
