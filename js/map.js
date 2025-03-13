@@ -169,8 +169,10 @@ d3.csv("data/cleaned_forbes_billionaires.csv").then(data => {
         nameToMarker[d.Name] = marker;
 
         marker.on("click", () => {
+            eventDispatcher.call("billionaireSelected", this, d);
             fetchBillionaireProfile(d, marker);
         });
+
 
         // Hover tooltip
         marker.on("mouseover", function(e) {
