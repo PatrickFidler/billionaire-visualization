@@ -19,12 +19,17 @@ h1 {
 }
 
 .bar {
-    fill: grey;
+    opacity: 50;
+    stroke: black;
 }
 
 .bubble {
     opacity: 50;
-    /*stroke: black;*/
+    stroke: black;
+}
+
+#bubble-title {
+    font-size: 12px;
 }
 
 /* Style for map container */
@@ -35,11 +40,11 @@ h1 {
 }
 
 #education {
-    width: 100%;
+    width: 80%;
     height: 50vh;
 }
 
 #industry {
-    width: 100%;
+    width: 80%;
     height: 50vh;
 }

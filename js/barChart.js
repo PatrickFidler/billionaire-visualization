@@ -27,8 +27,9 @@ class barChart {
 
         // chart title
         vis.svg.append('g')
-            .attr('class', 'title bar-title')
+            .attr('class', 'title')
             .append('text')
+            .attr("id", "bar-title")
             .text("Normalized Histogram of Billionaires' Highest Attained Education")
             .attr('transform', `translate(${vis.width / 2}, 10)`)
             .attr('text-anchor', 'middle');
@@ -36,8 +37,7 @@ class barChart {
         // scales
         vis.x = d3.scaleBand()
             .rangeRound([0, vis.width])
-            .paddingInner(0)
-            .domain(d3.range(0, 5));
+            .paddingInner(0);
 
         vis.y = d3.scaleLinear()
             .domain([0, 1])
@@ -53,36 +53,55 @@ class barChart {
         vis.svg.append("g")
             .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + vis.height + ")")
-            .call(vis.xAxis);
 
         vis.svg.append("g")
             .attr("class", "y-axis axis")
             .call(vis.yAxis);
 
+        // react to button
+        vis.selectedDegree = "bachelor";
+        vis.selectedSelfMade = 1;
+        vis.toggle = true;
+        d3.select("#bar-button")
+            .on("click", function() {
+                vis.toggle = !vis.toggle;
+                if (vis.toggle) {
+                    vis.svg.select("#bar-title")
+                        .text("Normalized Histogram of Billionaires' Highest Attained Education")
+                }
+                else {
+                    vis.svg.select("#bar-title")
+                        .text("Normalized Histogram of Self-made Billionaires")
+                }
+                vis.wrangleData();
+            })
+
         this.wrangleData();
 
     }
 
-
     wrangleData() {
         let vis = this;
 
-        // TODO: Add toggle for education/self-made
+        if (vis.toggle === true) {
+            // generate counts by degree
+            vis.counts = d3.rollup(vis.data, leaves => leaves.length, d => d.degree);
+        }
+        else {
+            // generate counts by self made
+            vis.counts = d3.rollup(vis.data, leaves => leaves.length, d => d.Self_made);
+        }
 
-        // generate normalized counts by degree
-        vis.counts = d3.rollup(vis.data, leaves => leaves.length, d => d.degree);
-        // console.log(vis.counts);
         vis.total = d3.sum(vis.counts.values());
-        // console.log(vis.total);
 
-        vis.normalizedCounts = Array.from(vis.counts, ([degree, count]) => ({
-            degree: degree,
-            normalized: count / vis.total
+        // generate normalized counts
+        vis.normalizedCounts = Array.from(vis.counts, ([key, value]) => ({
+            key: key,
+            value: value / vis.total
         }));
 
         // sort in descending order
-        vis.normalizedCounts.sort((a,b)=> b.normalized - a.normalized);
-        // console.log(vis.normalizedCounts);
+        vis.normalizedCounts.sort((a,b)=> b.value - a.value);
 
         vis.displayData = vis.normalizedCounts;
 
@@ -92,6 +111,25 @@ class barChart {
 
     updateVis() {
         let vis = this;
+
+        // listen for selected billionaire
+        eventDispatcher.on("billionaireSelected.education", function(selected){
+            vis.selectedDegree = selected.degree
+            vis.selectedSelfMade = parseInt(selected.Self_made);    // TODO: Remove parseInt when dispatcher connected to real data.
+            vis.svg.selectAll(".bar").attr("fill", (d, i) => {
+                if (d.degree === vis.selectedDegree || parseInt(d.Self_made) === vis.selectedSelfMade) { // TODO: Remove parseInt when dispatcher connected to real data.
+                    return "red"
+                }
+                else {
+                    return "grey"
+                }
+            })
+            vis.wrangleData();
+        })
+
+        // set scales and draw axes
+        vis.x.domain(d3.range(vis.displayData.length))
+        vis.svg.select(".x-axis").call(vis.xAxis)
 
         // draw bars
         vis.bars = vis.svg.selectAll(".bar")
@@ -105,8 +143,15 @@ class barChart {
             .attr("class", "bar")
             .attr("x", (d, i) => vis.x(i) )
             .attr("width", vis.x.bandwidth() )
-            .attr("y", d => vis.y(d.normalized) )
-            .attr("height", d => vis.height - vis.y(d.normalized) );
+            .attr("y", d => vis.y(d.value) )
+            .attr("height", d => vis.height - vis.y(d.value) )
+            .attr("fill", (d, i) => {
+                if (d.key === vis.selectedDegree || parseInt(d.key) === vis.selectedSelfMade) {
+                    return "red";
+                } else {
+                    return "grey";
+                }
+            });
 
         // draw bar labels
         vis.barLabels = vis.svg.select(".x-axis").selectAll("text")
@@ -116,7 +161,7 @@ class barChart {
 
         vis.barLabels.enter().append("text")
             .merge(vis.barLabels)
-            .text(d => d.degree);
+            .text(d => d.key);
 
     }
 
