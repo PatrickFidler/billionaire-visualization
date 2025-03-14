@@ -51,11 +51,9 @@ function initMain(data) {
 
     educationVis = new barChart("education", data[0]);
     industryVis = new bubbleChart("industry", data[0]);
+    const wealthApp = new window.WealthComparison('#wealth');
+    wealthApp.init();
 
 }
 
-// TODO: Please move initialization into initMain
-// Initialize Wealth Comparison
-const wealthApp = new window.WealthComparison('#wealth');
-wealthApp.init();
 let educationVis, industryVis;

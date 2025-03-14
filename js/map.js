@@ -1,4 +1,3 @@
-
 let nameToMarker = {};
 let billionaireNames = [];
 
@@ -25,6 +24,21 @@ const SearchControl = L.Control.extend({
             .style("width", "100%")
             .style("margin-bottom", "5px")
             .style("padding", "5px");
+
+        // Random Button
+        const randomButton = d3Container
+            .append("button")
+            .text("Random")
+            .style("width", "100%")
+            .style("padding", "5px")
+            .style("margin-bottom", "5px")
+            .on("click", function() {
+                if (billionaireNames.length === 0) return;
+                const randomName = billionaireNames[Math.floor(Math.random() * billionaireNames.length)];
+                input.property("value", randomName);
+                suggestions.html("").style("display", "none");
+                goToBillionaire(randomName);
+            });
 
         // Suggestions container
         const suggestions = d3Container
@@ -56,7 +70,6 @@ const SearchControl = L.Control.extend({
             }
 
             suggestions.style("display", "block");
-
 
             const items = suggestions
                 .selectAll("div.suggestion-item")
@@ -109,10 +122,7 @@ const SearchControl = L.Control.extend({
 // Add the custom search control to the top-left corner
 const searchControl = new SearchControl({ position: 'topleft' });
 
-
-
 // Initialize the Leaflet map
-
 const map = L.map("map", {
     center: [20, 0],
     zoom: 2,
@@ -173,7 +183,6 @@ d3.csv("data/cleaned_forbes_billionaires.csv").then(data => {
             fetchBillionaireProfile(d, marker);
         });
 
-
         // Hover tooltip
         marker.on("mouseover", function(e) {
             tooltip.style("visibility", "visible")
@@ -197,7 +206,6 @@ d3.csv("data/cleaned_forbes_billionaires.csv").then(data => {
     });
 });
 
-
 /**
  * Called when the user selects a suggestion from the search box.
  * Zooms and opens that marker's popup.
@@ -216,7 +224,7 @@ function goToBillionaire(name) {
 }
 
 /**
- * Fetch the billionaire's profile, then show a Leaflet popup with the image (if any).
+ * Fetch the billionaire's profile, then show a Leaflet popup with the image.
  */
 function fetchBillionaireProfile(d, marker) {
     let cleanedName = cleanName(d.Name);
