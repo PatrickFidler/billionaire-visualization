@@ -13,11 +13,12 @@ $(function(){
         repeat: 0,                  // No repeat
         tag: 'span',                // Use <span> tags for typed content
         pause_on_tab_switch: true,  // Pause when tab is inactive
+        pause_on_click: false,
 
-        // Finish fade out the text, then fade in logo and Next button
-        fin: function(elm){
+        fin: function(){
             if (!finished) {
                 finished = true;
+                $('#skip').hide();
                 $('#t').fadeOut(3000, function(){
                     $('#logo').fadeIn(2000, function(){
                         $('#next').fadeIn(2000);
@@ -27,12 +28,12 @@ $(function(){
         }
     });
 
-    // Add skip functionality
     $('#skip').click(function(){
+        $('#skip').hide();
         $('#t').t_off(true);
-        $('#t').fadeOut(500, function(){
-            $('#logo').fadeIn(500, function(){
-                $('#next').fadeIn(500);
+        $('#t').fadeOut(300, function(){
+            $('#logo').fadeIn(300, function(){
+                $('#next').fadeIn(300);
             });
         });
     });

@@ -139,7 +139,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
 }).addTo(map);
 
-// Add D3-based search control
+// Add search control
 map.addControl(searchControl);
 
 // Create a marker cluster group

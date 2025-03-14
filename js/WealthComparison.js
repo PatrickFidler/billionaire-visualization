@@ -9,12 +9,14 @@ window.WealthComparison = class WealthComparison {
 
         // Define multiple zoom messages with their thresholds.
         this.zoomMessages = [
-            { threshold: 49, message: "The average US house costs around $400,000!", triggered: false },
-            { threshold: 5, message: "A luxury sports car can cost about $300,000!", triggered: false },
-            { threshold: 2.86, message: "Did you know a Boeing 767 costs $300 million?", triggered: false },
-            { threshold: 1, message: "The average college tuition is roughly $35,000 per year!", triggered: false },
-            { threshold: 0.2, message: "The Titanic cost about $7.5 million to build (1912)!", triggered: false },
-            { threshold: 0.27, message: "the budget of Ontario in 2024 is 214.5 Billion", triggered: false }
+            { threshold: 400000, message: "The average US house costs around $400,000!", triggered: false },
+            { threshold: 300000, message: "A luxury sports car can cost about $300,000!", triggered: false },
+            { threshold: 100e6, message: "Did you know a Boeing 767 costs $300 million?", triggered: false },
+            { threshold: 35000, message: "The average college tuition is roughly $35,000 per year!", triggered: false },
+            { threshold: 7.5e6, message: "The Titanic cost about $7.5 million to build (1912)!", triggered: false },
+            { threshold: 400e9, message: "Elon Musk Has 400 Billion Dollars as of Jan 2025", triggered: false },
+            { threshold: 214e9, message: "the budget of Ontario in 2024 is 214.5 Billion", triggered: false }
+
         ];
 
         // Set up zoom behavior.
@@ -250,6 +252,7 @@ window.WealthComparison = class WealthComparison {
      * Updates squares, labels, and triggers trivia animations based on zoom.
      */
     updateZoom(scale) {
+        // Update squares and labels as before...
         this.containerGroup.selectAll(".wealth-square").each((d, i, nodes) => {
             const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
             d3.select(nodes[i])
@@ -287,10 +290,15 @@ window.WealthComparison = class WealthComparison {
         if (!this.skipAnimation) {
             let triggeredMessage = null;
             for (let msg of this.zoomMessages) {
-                if (scale < msg.threshold && !msg.triggered) {
+                // If the threshold is given as a money value (e.g. > 1000), compute the zoom threshold.
+                let effectiveThreshold = msg.threshold;
+                if (msg.threshold > 1000) {
+                    effectiveThreshold = this.width * Math.sqrt(this.conversionFactor / msg.threshold);
+                }
+                if (scale < effectiveThreshold && !msg.triggered) {
                     triggeredMessage = msg.message;
                     msg.triggered = true;
-                } else if (scale >= msg.threshold) {
+                } else if (scale >= effectiveThreshold) {
                     msg.triggered = false;
                 }
             }
@@ -305,7 +313,7 @@ window.WealthComparison = class WealthComparison {
         );
         const rectArea = 20 * 20;
         const rectValue = rectArea * wealthPerPixel;
-        this.pixelSampleLabel.text(`= $${rectValue.toFixed(2)}`);
+        this.pixelSampleLabel.text(`= $${rectValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     }
 
     /**
@@ -317,9 +325,11 @@ window.WealthComparison = class WealthComparison {
             .style("visibility", "visible")
             .style("opacity", "1")
             .style("right", "-400px")
+            .style("bottom", "100px")      // initial vertical position
             .transition()
             .duration(2000)
             .style("right", "0px")
+            .style("bottom", "100px")     // final vertical position (higher up)
             .transition()
             .delay(3000)
             .duration(1000)
@@ -328,4 +338,5 @@ window.WealthComparison = class WealthComparison {
                 this.triviaDisplay.style("visibility", "hidden");
             });
     }
+
 };
