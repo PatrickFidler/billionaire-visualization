@@ -20,9 +20,9 @@
 
 // dispatch the billionaire selected
 const eventDispatcher = d3.dispatch("billionaireSelected");
+window.allowed_scroll = 0;
 eventDispatcher.on("billionaireSelected", function(billionaire) {
     console.log("Billionaire selected:", billionaire);
-
 });
 
 
@@ -51,11 +51,26 @@ function initMain(data) {
 
     educationVis = new barChart("education", data[0]);
     industryVis = new bubbleChart("industry", data[0]);
+    infoVis = new textChart("info", data[0]);
 
+}
+
+// helper for scroll button
+function scrollDown() {
+    console.log(allowed_scroll);
+    if (window.allowed_scroll === 0 || window.allowed_scroll === 2) {
+        window.scrollBy({
+            top: window.innerHeight, 
+            behavior: 'smooth' 
+        });
+        if (window.allowed_scroll === 0) {
+            window.allowed_scroll = 1;
+        }
+    }
 }
 
 // TODO: Please move initialization into initMain
 // Initialize Wealth Comparison
 const wealthApp = new window.WealthComparison('#wealth');
 wealthApp.init();
-let educationVis, industryVis;
+let educationVis, industryVis, infoVis;

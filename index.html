@@ -25,35 +25,33 @@
 <body>
 
 <div class="container-fluid">
+    <button class="scroll-button" onclick="scrollDown()">Next</button>
     <div class="row">
-        <!-- Start page and map container -->
-        <h1>The Billionaires Among Us</h1>
-        <div id="map"></div>
-        <img class="arrow" src="data/arrow.png" alt="down arrow">
+        <div id="start" class="section">
+            <h1>The Billionaires Among Us</h1>
+        </div>
+    </div>
+    <div class="row">
+        <!-- map container -->
+        <div id="map" class="section"></div>
     </div>
     <div class="row">
         <!-- industry bubble chart container -->
-        <div id="industry">
-<!--            <img src="data/bubblechart.jpg" alt="bubble chart placeholder">-->
-        </div>
-
+        <div id="industry" class="section"></div>
     </div>
     <div class="row">
         <!-- education/self-made bar chart container -->
-        <button type="button" id="bar-button">Toggle</button>
-        <div id="education"></div>
+        <div id="education" class="section">
+            <button type="button" id="bar-button">Toggle</button>
+        </div>
     </div>
     <div class="row">
-        <img class="arrow" src="data/arrow.png" alt="down arrow">
         <!-- personal info container -->
-        <div id="info">
-            <img src="data/infochart.jpg" alt="personal info placeholder">
-        </div>
-        <img class="arrow" src="data/arrow.png" alt="down arrow">
+        <div id="info" class="section"></div>
     </div>
     <div class="row">
         <!-- wealth comparison chart container -->
-        <div id="wealth"></div>
+        <div id="wealth" class="section"></div>
     </div>
 </div>
 
@@ -69,6 +67,7 @@
 <script src="js/map.js"></script>
 <script src="js/barChart.js"></script>
 <script src="js/bubbleChart.js"></script>
+<script src="js/textChart.js"></script>
 <script src="js/WealthComparison.js"></script>
 <script src="js/main.js"></script>
 

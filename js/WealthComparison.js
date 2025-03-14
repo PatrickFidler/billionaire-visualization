@@ -34,8 +34,6 @@ window.WealthComparison = class WealthComparison {
 
     init() {
         this.container
-            .style("margin", "20px")
-            .style("padding", "200px")
             .style("box-sizing", "border-box");
         this.createInputForm();
         this.createSVG();
@@ -88,10 +86,9 @@ window.WealthComparison = class WealthComparison {
         // Create the main SVG.
         this.svg = this.container.append("svg")
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
-            .attr("preserveAspectRatio", "xMidYMid meet")
             .style("border", "1px solid #ccc")
             .style("width", "100%")
-            .style("height", "auto");
+            .style("height", "100%");
 
         // Create a group for zoomable content
         this.zoomGroup = this.svg.append("g").attr("class", "zoom-group");
