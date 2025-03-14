@@ -53,6 +53,8 @@ function initMain(data) {
     industryVis = new bubbleChart("industry", data[0]);
     infoVis = new textChart("info", data[0]);
 
+    const wealthApp = new window.WealthComparison('#wealth');
+    wealthApp.init();
 }
 
 // helper for scroll button
@@ -71,6 +73,4 @@ function scrollDown() {
 
 // TODO: Please move initialization into initMain
 // Initialize Wealth Comparison
-const wealthApp = new window.WealthComparison('#wealth');
-wealthApp.init();
 let educationVis, industryVis, infoVis;

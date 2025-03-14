@@ -18,9 +18,15 @@ window.WealthComparison = class WealthComparison {
         ];
 
         // Set up zoom behavior.
+        // Added scaleExtent to limit zoom levels and disable zooming when no squares are present.
         this.zoom = d3.zoom()
-            .wheelDelta((event) => -event.deltaY * 0.0002)  // Adjusts zoom sensitivity
+            .scaleExtent([0.04, 99999]) // Set minimum and maximum zoom scales.
+            .wheelDelta((event) => -event.deltaY * 0.0002)  // Adjusts zoom sensitivity.
             .on("zoom", (event) => {
+                // Disable zooming if no wealth squares have been generated.
+                if (this.containerGroup.selectAll("rect").empty()) {
+                    return;
+                }
                 this.updateZoom(event.transform.k);
             });
 
@@ -90,7 +96,7 @@ window.WealthComparison = class WealthComparison {
             .style("width", "100%")
             .style("height", "100%");
 
-        // Create a group for zoomable content
+        // Create a group for zoomable content.
         this.zoomGroup = this.svg.append("g").attr("class", "zoom-group");
 
         this.containerGroup = this.zoomGroup.append("g").attr("class", "squares-group");
@@ -108,7 +114,7 @@ window.WealthComparison = class WealthComparison {
             .style("font-size", "14px")
             .text(`Wealth scale: $${(this.conversionFactor).toFixed(2)} per pixel`);
 
-        // Create a sample pixel
+        // Create a sample pixel.
         this.pixelSample = this.legendGroup.append("rect")
             .attr("class", "pixel-sample")
             .attr("x", this.width / 2 - 60)
@@ -128,10 +134,11 @@ window.WealthComparison = class WealthComparison {
             .style("font-size", "12px")
             .text(`= $${(this.conversionFactor).toFixed(2)} per pixel`);
 
-
+        // Apply the zoom behavior to the SVG.
         this.svg.call(this.zoom);
     }
-    // Create a trivia display
+
+    // Create a trivia display.
     createTriviaDisplay() {
         this.triviaDisplay = d3.select("body").append("div")
             .attr("class", "trivia-display")
@@ -257,8 +264,6 @@ window.WealthComparison = class WealthComparison {
      * Updates squares and labels on zoom, and triggers animated trivia based solely on zoom level.
      */
     updateZoom(scale) {
-        // Apply zoom transform only to the zoomable group.
-
         // Update each square’s dimensions.
         this.containerGroup.selectAll(".wealth-square").each((d, i, nodes) => {
             const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
@@ -267,7 +272,7 @@ window.WealthComparison = class WealthComparison {
                 .attr("height", side);
         });
 
-        // Update label positions
+        // Update label positions.
         this.textGroup.selectAll("text").each((d, i, nodes) => {
             const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
             let x, y, fontSize;
@@ -295,7 +300,7 @@ window.WealthComparison = class WealthComparison {
                 .style("font-size", `${fontSize}px`);
         });
 
-        // Handle trivia messages
+        // Handle trivia messages.
         if (!this.skipAnimation) {
             let triggeredMessage = null;
             for (let msg of this.zoomMessages) {
@@ -314,12 +319,11 @@ window.WealthComparison = class WealthComparison {
         // Calculate wealth per pixel.
         const wealthPerPixel = this.conversionFactor / (scale * scale);
 
-
         // Update the static legend texts.
         this.xAxisLabel.text(
             `Zoom: ${scale.toFixed(2)} | Wealth scale: $${wealthPerPixel.toFixed(2)} per pixel`
         );
-        const rectArea = 20 * 20;   // 400 px²
+        const rectArea = 20 * 20;   // 400 px².
         const rectValue = rectArea * wealthPerPixel;
         this.pixelSampleLabel.text(`= $${rectValue.toFixed(2)}`);
     }
