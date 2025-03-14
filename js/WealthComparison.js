@@ -3,7 +3,7 @@ window.WealthComparison = class WealthComparison {
         this.container = d3.select(containerSelector);
         this.conversionFactor = 1000;
         this.wealthItems = [];
-        this.selectedBillionaire = "Elon Musk"; // Default
+        this.selectedBillionaire = null;
         this.planeTriviaAnimated = false;
         this.skipAnimation = false;
 
@@ -18,12 +18,10 @@ window.WealthComparison = class WealthComparison {
         ];
 
         // Set up zoom behavior.
-        // Added scaleExtent to limit zoom levels and disable zooming when no squares are present.
         this.zoom = d3.zoom()
-            .scaleExtent([0.04, 99999]) // Set minimum and maximum zoom scales.
-            .wheelDelta((event) => -event.deltaY * 0.0002)  // Adjusts zoom sensitivity.
+            .scaleExtent([0.04, 99999])
+            .wheelDelta((event) => -event.deltaY * 0.0002)
             .on("zoom", (event) => {
-                // Disable zooming if no wealth squares have been generated.
                 if (this.containerGroup.selectAll("rect").empty()) {
                     return;
                 }
@@ -35,15 +33,27 @@ window.WealthComparison = class WealthComparison {
         this.height = 1000;
         this.containerGroup = null;
         this.textGroup = null;
-        this.triviaDisplay = null; // For trivia text and animation
+        this.triviaDisplay = null;
+
+        eventDispatcher.on("billionaireSelected.wealth", (billionaire) => {
+            console.log("Billionaire selected:", billionaire);
+            // Convert net worth from billions to dollars.
+            this.selectedBillionaire = {
+                Name: billionaire.Name,
+                NetWorth: billionaire.NetWorth * 1e9
+            };
+            const wealthValue = +document.getElementById("wealth-input").value;
+            if (wealthValue > 0) {
+                this.wrangleData(wealthValue);
+            }
+        });
     }
 
     init() {
-        this.container
-            .style("box-sizing", "border-box");
+        this.container.style("box-sizing", "border-box");
         this.createInputForm();
         this.createSVG();
-        this.createTriviaDisplay();  // Create the animated trivia container
+        this.createTriviaDisplay();
         this.loadBillionaires();
     }
 
@@ -73,39 +83,21 @@ window.WealthComparison = class WealthComparison {
                 }
             });
 
-        // Dropdown to select billionaire
-        inputContainer.append("label")
-            .text("Compare with: ");
-
-        const billionaireDropdown = inputContainer.append("select")
-            .attr("id", "billionaire-select")
-            .style("margin-left", "5px")
-            .on("change", () => {
-                this.selectedBillionaire = billionaireDropdown.node().value;
-                this.wrangleData(+document.getElementById("wealth-input").value);
-            });
-
-        this.billionaireDropdown = billionaireDropdown;
     }
 
     createSVG() {
-        // Create the main SVG.
         this.svg = this.container.append("svg")
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
             .style("border", "1px solid #ccc")
             .style("width", "100%")
             .style("height", "100%");
 
-        // Create a group for zoomable content.
         this.zoomGroup = this.svg.append("g").attr("class", "zoom-group");
-
         this.containerGroup = this.zoomGroup.append("g").attr("class", "squares-group");
         this.textGroup = this.zoomGroup.append("g").attr("class", "labels-group");
 
-        // Create a legend group for static elements (not affected by zoom).
         this.legendGroup = this.svg.append("g").attr("class", "legend-group");
 
-        // Create the wealth scale label at the top center.
         this.xAxisLabel = this.legendGroup.append("text")
             .attr("class", "x-axis-label")
             .attr("x", this.width / 2)
@@ -114,7 +106,6 @@ window.WealthComparison = class WealthComparison {
             .style("font-size", "14px")
             .text(`Wealth scale: $${(this.conversionFactor).toFixed(2)} per pixel`);
 
-        // Create a sample pixel.
         this.pixelSample = this.legendGroup.append("rect")
             .attr("class", "pixel-sample")
             .attr("x", this.width / 2 - 60)
@@ -125,7 +116,6 @@ window.WealthComparison = class WealthComparison {
             .attr("stroke", "black")
             .attr("stroke-width", 1);
 
-        // Label for the sample pixel.
         this.pixelSampleLabel = this.legendGroup.append("text")
             .attr("class", "pixel-sample-label")
             .attr("x", this.width / 2 - 30)
@@ -134,11 +124,9 @@ window.WealthComparison = class WealthComparison {
             .style("font-size", "12px")
             .text(`= $${(this.conversionFactor).toFixed(2)} per pixel`);
 
-        // Apply the zoom behavior to the SVG.
         this.svg.call(this.zoom);
     }
 
-    // Create a trivia display.
     createTriviaDisplay() {
         this.triviaDisplay = d3.select("body").append("div")
             .attr("class", "trivia-display")
@@ -158,7 +146,6 @@ window.WealthComparison = class WealthComparison {
             .style("visibility", "hidden");
     }
 
-    // Placeholder data for billionaires and other wealth items.
     loadBillionaires() {
         this.billionaireOptions = [
             { name: "Elon Musk", wealth: 250e9 },
@@ -167,23 +154,24 @@ window.WealthComparison = class WealthComparison {
             { name: "Mark Zuckerberg", wealth: 120e9 },
             { name: "Warren Buffett", wealth: 110e9 }
         ];
-
-        this.billionaireDropdown
-            .selectAll("option")
-            .data(this.billionaireOptions)
-            .enter()
-            .append("option")
-            .attr("value", d => d.name)
-            .text(d => d.name);
     }
 
     /**
-     * Processes the selected billionaire's wealth and user wealth.
+     * Processes the selected billionaire's wealth and user wealth
      */
     wrangleData(userWealth) {
-        let selectedBillionaireData = this.billionaireOptions.find(b => b.name === this.selectedBillionaire);
+        let selectedBillionaireData;
+        if (this.selectedBillionaire) {
+            selectedBillionaireData = {
+                name: this.selectedBillionaire.Name,
+                wealth: this.selectedBillionaire.NetWorth
+            };
+        } else {
+            selectedBillionaireData = this.billionaireOptions.find(b => b.name === "Elon Musk");
+        }
 
         this.wealthItems = [
+            { name: "Elon Musk (2025)", wealth: 400e9, color: "black", fill: "none" },
             { name: selectedBillionaireData.name, wealth: selectedBillionaireData.wealth, color: "red", fill: "none" },
             { name: "Ontario Budget", wealth: 14e9, color: "orange", fill: "none" },
             { name: "Cost of a Building", wealth: 1e9, color: "purple", fill: "none" },
@@ -191,9 +179,8 @@ window.WealthComparison = class WealthComparison {
             { name: "Your Wealth", wealth: userWealth, color: "blue", fill: "blue", opacity: 0.5 }
         ];
 
-        // Sort in descending order so the largest square is drawn first.
+        // Sort so the largest square is drawn first.
         this.wealthItems.sort((a, b) => b.wealth - a.wealth);
-
         this.updateVis();
     }
 
@@ -235,7 +222,6 @@ window.WealthComparison = class WealthComparison {
                 .datum(item);
         });
 
-        // Zoom to the "Your Wealth" square.
         const userItem = this.wealthItems.find(d => d.name === "Your Wealth");
         if (userItem) {
             const userSide = Math.sqrt(userItem.wealth / this.conversionFactor);
@@ -251,7 +237,7 @@ window.WealthComparison = class WealthComparison {
         const scale = Math.min((this.width - margin) / userSide, (this.height - margin) / userSide);
         const translateX = (this.width - userSide * scale) / 2;
         const translateY = (this.height - userSide * scale) / 2;
-        this.skipAnimation = true; // Skip animation during programmatic zoom.
+        this.skipAnimation = true;
         this.svg.transition()
             .duration(750)
             .call(this.zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale))
@@ -261,10 +247,9 @@ window.WealthComparison = class WealthComparison {
     }
 
     /**
-     * Updates squares and labels on zoom, and triggers animated trivia based solely on zoom level.
+     * Updates squares, labels, and triggers trivia animations based on zoom.
      */
     updateZoom(scale) {
-        // Update each square’s dimensions.
         this.containerGroup.selectAll(".wealth-square").each((d, i, nodes) => {
             const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
             d3.select(nodes[i])
@@ -272,7 +257,6 @@ window.WealthComparison = class WealthComparison {
                 .attr("height", side);
         });
 
-        // Update label positions.
         this.textGroup.selectAll("text").each((d, i, nodes) => {
             const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
             let x, y, fontSize;
@@ -300,7 +284,6 @@ window.WealthComparison = class WealthComparison {
                 .style("font-size", `${fontSize}px`);
         });
 
-        // Handle trivia messages.
         if (!this.skipAnimation) {
             let triggeredMessage = null;
             for (let msg of this.zoomMessages) {
@@ -316,21 +299,17 @@ window.WealthComparison = class WealthComparison {
             }
         }
 
-        // Calculate wealth per pixel.
         const wealthPerPixel = this.conversionFactor / (scale * scale);
-
-        // Update the static legend texts.
         this.xAxisLabel.text(
             `Zoom: ${scale.toFixed(2)} | Wealth scale: $${wealthPerPixel.toFixed(2)} per pixel`
         );
-        const rectArea = 20 * 20;   // 400 px².
+        const rectArea = 20 * 20;
         const rectValue = rectArea * wealthPerPixel;
         this.pixelSampleLabel.text(`= $${rectValue.toFixed(2)}`);
     }
 
     /**
-     * Creates and animates a trivia message that slides from right to left.
-     * Accepts a custom message as a parameter.
+     * Animates a trivia message that slides in and out.
      */
     animateTriviaMessage(message) {
         this.triviaDisplay
