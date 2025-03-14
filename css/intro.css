@@ -1,0 +1,128 @@
+::selection {
+    background: aquamarine;
+    color: white;
+}
+
+
+::-moz-selection {
+    background: aquamarine;
+    color: white;
+}
+
+body {
+    background: #141423;
+    color: mediumslateblue;
+    margin: 0;
+    font-family: 'VT323', monospace;
+}
+
+* {
+    cursor: default;
+    line-height: 3.5vw;
+    font-size: 3vw;
+    padding: 0;
+    margin: 0;
+    outline: 0;
+}
+
+/* Typed text container */
+#t {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    width: 600px;
+    margin-left: -300px;
+    visibility: hidden;
+    white-space: pre-wrap;
+}
+
+#t p {
+    text-indent: 0em;
+}
+
+/* Logo and Next button container */
+#logoContainer {
+    text-align: center;
+    margin-top: 5%;
+}
+
+/* Logo styles */
+#logo {
+    display: none;
+    margin: 0 auto;
+}
+
+#logo img {
+    max-width: 40%;
+    height: auto;
+}
+
+/* Next button styles */
+#next {
+    display: none;
+    margin-top: 20px;
+}
+
+#next button {
+    padding: 0.8em 1.5em;
+    font-size: 2vw;
+    background-color: mediumslateblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+}
+
+/* Skip button styling */
+#skip {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0.5em 1em;
+    background-color: mediumslateblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+    font-size: 1.5vw;
+}
+
+/* t.js-related styles */
+ins, del {
+    text-decoration: none;
+}
+s {
+    display: none;
+}
+kbd {
+    font-family: inherit;
+}
+.t-caret {
+    font-size: inherit;
+    color: magenta;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    #t {
+        width: 400px;
+        margin-left: -200px;
+    }
+    #skip {
+        font-size: 2vw;
+    }
+    #next button {
+        font-size: 3vw;
+    }
+}
+
+/* Highlight effect for specific text */
+#highlight {
+    transition: background-color 1s ease;
+}
+
+#highlight.active {
+    background-color: yellow;
+}

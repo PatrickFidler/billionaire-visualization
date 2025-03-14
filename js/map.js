@@ -127,7 +127,7 @@ const map = L.map("map", {
     center: [20, 0],
     zoom: 2,
     minZoom: 2,
-    maxZoom: 8,
+    maxZoom: 10,
     worldCopyJump: false,
     maxBoundsViscosity: 1.0
 });
@@ -139,12 +139,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
 }).addTo(map);
 
-// Add our D3-based search control
+// Add D3-based search control
 map.addControl(searchControl);
 
 // Create a marker cluster group
-const markers = L.markerClusterGroup();
-map.addLayer(markers);
+const markers = L.markerClusterGroup({
+});
+    map.addLayer(markers);
 
 // Create a tooltip for displaying billionaire name and net worth on hover
 const tooltip = d3.select("body")

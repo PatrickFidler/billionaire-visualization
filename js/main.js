@@ -71,6 +71,4 @@ function scrollDown() {
     }
 }
 
-// TODO: Please move initialization into initMain
-// Initialize Wealth Comparison
 let educationVis, industryVis, infoVis;
