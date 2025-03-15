@@ -19,9 +19,14 @@ $(function(){
             if (!finished) {
                 finished = true;
                 $('#skip').hide();
+                var audio = document.getElementById("background-music");
+                if (audio) {
+                    audio.play();
+                }
                 $('#t').fadeOut(3000, function(){
                     $('#logo').fadeIn(2000, function(){
                         $('#next').fadeIn(2000);
+                        $('#mute').fadeIn(2000);
                     });
                 });
             }
@@ -33,8 +38,22 @@ $(function(){
         $('#t').t_off(true);
         $('#t').fadeOut(300, function(){
             $('#logo').fadeIn(300, function(){
+                var audio = document.getElementById("background-music");
+                if (audio) {
+                    audio.play();
+                }
                 $('#next').fadeIn(300);
+                $('#mute').fadeIn(300);
             });
         });
+    });
+
+
+    $('#mute').click(function(){
+        var audio = document.getElementById("background-music");
+        if (audio) {
+            audio.muted = !audio.muted;
+            $(this).text(audio.muted ? "Unmute Music" : "Mute Music");
+        }
     });
 });
