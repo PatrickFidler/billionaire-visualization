@@ -5,6 +5,8 @@ class barChart {
         this.parentElement = parentElement;
         this.data = data;
         this.displayData = data;
+        
+        window.addEventListener("resize", () => this.resize());
 
         this.initVis();
     }
@@ -15,7 +17,9 @@ class barChart {
 
         // svg margins
         vis.margin = {top: 40, right: 40, bottom: 40, left: 40};
-        vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
+        let button_styles = window.getComputedStyle(document.getElementById('bar-button'));
+        let button_width = parseFloat(button_styles.getPropertyValue('width'));
+        vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - button_width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
         // init svg
@@ -131,6 +135,30 @@ class barChart {
         this.updateVis();
     }
 
+    // redraw the chart with new dimensions if screen is resized
+    resize() {
+        let vis = this;
+
+        let button_styles = window.getComputedStyle(document.getElementById('bar-button'));
+        let button_width = parseFloat(button_styles.getPropertyValue('width'));
+        vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - button_width - vis.margin.left - vis.margin.right;
+        vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
+    
+        vis.svg.attr("width", vis.width + vis.margin.left + vis.margin.right)
+               .attr("height", vis.height + vis.margin.top + vis.margin.bottom);
+    
+        vis.x.rangeRound([0, vis.width]);
+        vis.y.range([vis.height, 0]);
+    
+        vis.svg.select(".x-axis")
+            .attr("transform", `translate(0, ${vis.height})`)
+            .call(vis.xAxis);
+    
+        vis.svg.select(".y-axis")
+            .call(vis.yAxis);
+    
+        vis.updateVis();
+    }
 
     updateVis() {
         let vis = this;

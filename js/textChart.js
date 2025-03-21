@@ -6,6 +6,8 @@ class textChart {
         this.data = data;
         this.displayData = data;
 
+        window.addEventListener("resize", () => this.resize());
+
         this.initVis();
     }
 
@@ -24,14 +26,6 @@ class textChart {
             .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
-
-        // chart title
-        // vis.svg.append('g')
-        //     .attr('class', 'title')
-        //     .append('text')
-        //     .text("Your Billionaire")
-        //     .attr('transform', `translate(${vis.width / 2}, 10)`)
-        //     .attr('text-anchor', 'middle');
 
         vis.bilimage = vis.svg.append('image')
             .attr('x', vis.width / 2 - 70 - 250)
@@ -57,11 +51,12 @@ class textChart {
             .attr('y', vis.text_y)
             .text("Empty");
         
+        let name_width = document.getElementById('info-name').getBoundingClientRect().width;
         vis.svg.append('text')
             .attr('id', 'info-rank')
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
-            .attr('dx', 140)
+            .attr('dx', name_width + 10)
             .attr('dy', 0)
             .text("Empty")
             .attr("stroke", "black")
@@ -112,13 +107,76 @@ class textChart {
         this.updateVis();
     }
 
+    // redraw the chart with new dimensions if screen is resized
+    resize() {
+        let vis = this;
+
+        vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
+        vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
+    
+        vis.svg.attr("width", vis.width + vis.margin.left + vis.margin.right)
+               .attr("height", vis.height + vis.margin.top + vis.margin.bottom);
+    
+        vis.text_x = vis.width / 2 + 70;
+        vis.text_y = vis.height / 4 + 30;
+    
+        vis.svg.select("#info-title")
+            .attr('x', vis.width / 2)
+            .attr('y', vis.height / 4);
+    
+        vis.svg.select("#info-name")
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y);
+        
+        let name_width = document.getElementById('info-name').getBoundingClientRect().width;
+        vis.svg.select("#info-rank")
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y)
+            .attr('dx', name_width + 10);
+    
+        vis.svg.select("#info-age")
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y)
+            .attr('dy', 30);
+    
+        vis.svg.select("#info-networth")
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y)
+            .attr('dy', 60);
+    
+        vis.svg.select("#info-country")
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y)
+            .attr('dy', 90);
+    
+        vis.svg.select("#info-marital")
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y)
+            .attr('dy', 120);
+    
+        vis.svg.select("#info-children")
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y)
+            .attr('dy', 150);
+
+        vis.bilimage
+            .attr('x', vis.width / 2 - 70 - 250)
+            .attr('y', vis.height / 4 + 20);
+    }
+    
 
     updateVis() {
         let vis = this;
 
         // listen for selected billionaire
         eventDispatcher.on("billionaireSelected", function(selected){
-            window.allowed_scroll = 2; // disgusting but it works for now
+            window.bil_selected = 1; // disgusting but it works for now
+            let button = document.getElementById('down-button');
+            button.style.setProperty('background-color', 'rgb(128, 128, 128, 1)');
+            button.style.setProperty('border', 'solid');
+            button.style.setProperty('font-size', '16px');
+
+
             let cleanedName = cleanName(selected.Name);
             let profileUrl = `https://forbes-api.vercel.app/profile/${cleanedName}`;
             let proxyUrl = 'https://corsproxy.io/?url='; // cors restrictions
@@ -150,7 +208,9 @@ class textChart {
             document.getElementById('info-marital').textContent = "Marital Status: " + vis.bmarital;
             document.getElementById('info-children').textContent = "Number of Children: " + vis.bnumchild;
 
-            vis.wrangleData();
+            let name_width = document.getElementById('info-name').getBoundingClientRect().width;
+            vis.svg.select("#info-rank")
+                .attr('dx', name_width + 10);
         })
 
     }

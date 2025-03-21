@@ -1,22 +1,37 @@
 
+body {
+    overflow: hidden;
+}
+
 h1 {
     text-align: center;
     margin: 0;
     padding: 0;
 }
 
-.scroll-button {
+.movement {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: grey;
+    padding: 5px 10px;
     color: white;
-    border: solid;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
     z-index: 1000;
+}
+
+#down-button {
+    bottom: 15px;
+    right: 15px;
+    background-color: grey;
+    border: solid;
+    font-size: 16px;
+}
+
+#up-button {
+    bottom: 15px;
+    right: 50px;
+    background-color: rgb(128, 128, 128, 0);
+    border: none;
+    font-size: 0;
 }
 
 .tooltip {
@@ -66,6 +81,7 @@ h1 {
     background-color: white;
     border: 2px solid purple;
     border-radius: 2px;
+    width: 5vw;
 }
 
 #bar-button:hover {
@@ -112,7 +128,7 @@ h1 {
 } */
 
 .section {
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -127,23 +143,35 @@ h1 {
 
 #info,
 #wealth {
-    width: 100%;
+    width: 100vw;
     height: 100vh;
 
 }
 
 #industry, #education {
-    width: 100%;
+    width: 100vw;
     height: 80vh;
 }
 
 #industry-intro, #education-intro {
     font-size: 20px;
-    padding: 1em;
+    width: 100vw;
+    height: 20vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #industry-intro b, #education-intro b {
     color: purple;
+}
+
+.intro {
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
 /*clippy*/

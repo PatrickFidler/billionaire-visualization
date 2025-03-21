@@ -25,7 +25,8 @@
 <body>
 
 <div class="container-fluid">
-    <button class="scroll-button" onclick="scrollDown()">Next</button>
+    <button id="down-button" class="movement" onclick="scrollDown()">↓</button>
+    <button id="up-button" class="movement" onclick="scrollUp()">↑</button>
     <div class="row">
         <div id="start" class="section">
             <h1>The Billionaires Among Us</h1>
@@ -35,12 +36,12 @@
         <!-- map container -->
         <div id="map" class="section"></div>
     </div>
-    <div id="industry-intro" class="row"><p></p></div>
+    <div id="industry-intro" class="row"><p class="intro"></p></div>
     <div class="row">
         <!-- industry bubble chart container -->
         <div id="industry" class="section"></div>
     </div>
-    <div id="education-intro" class="row"><p></p></div>
+    <div id="education-intro" class="row"><p class="intro"></p></div>
     <div class="row">
         <!-- education/self-made bar chart container -->
         <div id="education" class="section">

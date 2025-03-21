@@ -6,6 +6,8 @@ class bubbleChart2 {
         this.data = data;
         this.displayData = data;
 
+        window.addEventListener("resize", () => this.resize());
+
         this.initVis();
     }
 
@@ -25,14 +27,14 @@ class bubbleChart2 {
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-        // chart title
-        vis.svg.append('g')
-            .attr('class', 'title')
-            .attr("id", "bubble-title")
-            .append('text')
-            .text("Billionaire Industries")
-            .attr('transform', `translate(${vis.width / 2}, 10)`)
-            .attr('text-anchor', 'middle');
+        // // chart title
+        // vis.svg.append('g')
+        //     .attr('class', 'title')
+        //     .attr("id", "bubble-title")
+        //     .append('text')
+        //     .text("Billionaire Industries")
+        //     .attr('transform', `translate(${vis.width / 2}, 10)`)
+        //     .attr('text-anchor', 'middle');
 
         // scales
         vis.r = d3.scaleSqrt()
@@ -89,6 +91,29 @@ class bubbleChart2 {
         this.updateVis();
     }
 
+    // redraw the chart with new dimensions if screen is resized
+    resize() {
+        let vis = this;
+    
+        vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
+        vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
+    
+        vis.svg.attr("width", vis.width + vis.margin.left + vis.margin.right)
+               .attr("height", vis.height + vis.margin.top + vis.margin.bottom);
+    
+        vis.zoom.translateExtent([[0, 0], [vis.width, vis.height]]);
+        vis.svg.call(vis.zoom);
+    
+        vis.svg.select("rect")
+            .attr("width", vis.width)
+            .attr("height", vis.height);
+    
+        // vis.svg.select("#bubble-title text")
+        //     .attr("x", vis.width / 2);
+    
+        this.updateVis();
+    }
+    
 
     updateVis() {
         let vis = this;
