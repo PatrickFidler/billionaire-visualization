@@ -35,56 +35,28 @@ class bubbleChart2 {
             .attr('text-anchor', 'middle');
 
         // scales
-        vis.x = d3.scaleLinear()
-            .domain([0, 1])
-            .range([0, vis.width]);
-
-        vis.y = d3.scaleLinear()
-            .domain([0, 1])
-            .range([vis.height, 0]);
-
         vis.r = d3.scaleSqrt()
             .range([1, 20]);
 
-        // y-axis
-        // vis.yAxis = d3.axisLeft()
-        //     .scale(vis.y);
-        //
-        // vis.svg.append("g")
-        //     .attr("class", "y-axis axis")
-        //     .call(vis.yAxis);
-
-        // y-axis label
-        // vis.svg.select(".y-axis")
-        //     .append("text")
-        //     .attr("x", 0)
-        //     .attr("y", 20)
-        //     .attr("fill", "black")
-        //     .attr("transform", "rotate(-90,0,0)")
-        //     .text("Number of Billionaires in Industry")
-
         // define zoom behavior
-        // vis.zoomFunction = function(event) {
-        //     vis.svg.attr("transform", event.transform);
-        //     // vis.svg.select(".y-axis").call(vis.yAxis.scale(event.transform.rescaleY(vis.y)))
-        //     // vis.svg.selectAll(".bubble").attr("cy", (d, i) => vis.y(d.count))
-        //
-        // }
+        vis.zoomFunction = function(event) {
+            vis.svg.attr("transform", event.transform);
+        }
 
-        // vis.zoom = d3.zoom()
-        //     .scaleExtent([1, 20])
-        //     .translateExtent([[0, 0], [vis.width, vis.height]])
-        //     .on("zoom", vis.zoomFunction);
-        //
-        // vis.svg.call(vis.zoom);
+        vis.zoom = d3.zoom()
+            .scaleExtent([1, 20])
+            .translateExtent([[0, 0], [vis.width, vis.height]])
+            .on("zoom", vis.zoomFunction);
+
+        vis.svg.call(vis.zoom);
 
         // zoom surface
-        // vis.svg.append("rect")
-        //     .attr("x", 0)
-        //     .attr("y", 0)
-        //     .attr("width", vis.width)
-        //     .attr("height", vis.height)
-        //     .attr("opacity", 0)
+        vis.svg.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", vis.width)
+            .attr("height", vis.height)
+            .attr("opacity", 0)
 
         // tooltip
         vis.tooltip = d3.select("body").append('div')
@@ -145,6 +117,13 @@ class bubbleChart2 {
                         return "grey";
                     }
                 })
+                .attr("opacity", (d, i) => {
+                    if (d.source === selectedSource) {
+                        return 1;
+                    } else {
+                        return 0.5;
+                    }
+                })
                 .attr("stroke", "black")
                 .on('mouseover', function(event, d){
                     d3.select(this)
@@ -191,6 +170,13 @@ class bubbleChart2 {
                         return "grey"
                     }
                 })
+                .attr("opacity", (d, i) => {
+                    if (d.source === selectedSource) {
+                        return 1.0;
+                    } else {
+                        return 0.5;
+                    }
+                })
 
             d3.select("#industry-intro").select("p")
                 .html(
@@ -198,60 +184,6 @@ class bubbleChart2 {
                      Explore billionaires' industries below. There are so many ways to make a billion dollars!`
                 )
         })
-
-        // vis.svg.select(".y-axis").call(vis.yAxis);
-        //
-        // // draw bubbles
-        // vis.bubbles = vis.svg.selectAll(".bubble")
-        //     .data(vis.displayData);
-        //
-        // vis.bubbles.exit().remove();
-        //
-        // vis.bubbles.enter().append("circle")
-        //     .merge(vis.bubbles)
-        //     // .transition()
-        //     .attr("class", "bubble")
-        //     .attr("cx", (d, i) => vis.x(
-        //         d3.randomUniform(0, 100)()
-        //     ))
-        //     .attr("r", (d, i) => vis.r(d.count) )
-        //     .attr("cy", (d, i) => vis.y(d.count) )
-        //     .attr("fill", (d, i) => {
-        //         if (d.source === selectedSource) {
-        //             return "purple";
-        //         } else {
-        //             return "grey";
-        //         }
-        //     })
-        //     .on('mouseover', function(event, d){
-        //         d3.select(this)
-        //             .attr('fill', 'black');
-        //
-        //         vis.tooltip
-        //             .style("opacity", 1)
-        //             .style("left", event.pageX + 20 + "px")
-        //             .style("top", event.pageY + "px")
-        //             .html(`
-        //                  <div style="border: thin solid black; border-radius: 5px; background: white; padding: 0.5em">
-        //                      <text>${d.source}</text>
-        //                  </div>`);
-        //     })
-        //     .on('mouseout', function(event, d){
-        //         d3.select(this)
-        //             .attr("fill", d => {
-        //                 if (d.source === selectedSource) {
-        //                     return "purple";
-        //                 } else {
-        //                     return "grey";
-        //                 }
-        //             })
-        //
-        //         vis.tooltip
-        //             .style("opacity", 0)
-        //             .style("left", 0)
-        //             .style("top", 0)
-        //             .html(``);
-        //     })
 
     }
 
