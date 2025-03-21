@@ -28,8 +28,8 @@ window.WealthComparison = class WealthComparison {
                 triggered: false
             },
             {
-                threshold: 50000,
-                message: "A fancy Stanley Cup replica can cost around $50,000!",
+                threshold: 57700* CAD_TO_USD,
+                message: "The Average Canadian income is about $43,275",
                 triggered: false
             },
             {
@@ -72,14 +72,14 @@ window.WealthComparison = class WealthComparison {
                 message: "The average NHL franchise is worth about $750 million!",
                 triggered: false
             },
-            {
-                threshold: 2.12e9 * CAD_TO_USD,
-                message: "The Toronto Maple Leafs are valued at about $1.59 billion!",
-                triggered: false
-            },
+            // {
+            //     threshold: 2.12e9 * CAD_TO_USD,
+            //     message: "The Toronto Maple Leafs are valued at about $1.59 billion!",
+            //     triggered: false
+            // },
             {
                 threshold: 40e9 * CAD_TO_USD,
-                message: "David Thomson is worth around $30 billion!",
+                message: "the richest Canadian, David Thomson is worth around $30 billion!",
                 triggered: false
             },
             {
@@ -92,7 +92,7 @@ window.WealthComparison = class WealthComparison {
 
         // Set up D3 zoom behavior
         this.zoom = d3.zoom()
-            .scaleExtent([0.04, 99999])
+            .scaleExtent([0.01, 99999])
             .wheelDelta((event) => -event.deltaY * 0.0002)
             .on("zoom", (event) => {
                 if (this.containerGroup && !this.containerGroup.selectAll("rect").empty()) {
@@ -359,8 +359,8 @@ window.WealthComparison = class WealthComparison {
                 fill: "none"
             },
             {
-                name: "David Thomson (2025)",
-                wealth: 40e9 * CAD_TO_USD,
+                name: "Richest Canadian (David Thomson)",
+                wealth: 41.8e9 * CAD_TO_USD,
                 color: "black",
                 fill: "none"
             },
@@ -396,8 +396,8 @@ window.WealthComparison = class WealthComparison {
                 fill: "none"
             },
             {
-                name: "Stanley Cup Replica",
-                wealth: 50000,
+                name: "Average Canadian Yearly Income",
+                wealth: 57700 * CAD_TO_USD,
                 color: "silver",
                 fill: "none"
             },

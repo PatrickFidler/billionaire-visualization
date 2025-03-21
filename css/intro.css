@@ -3,7 +3,6 @@
     color: white;
 }
 
-
 ::-moz-selection {
     background: aquamarine;
     color: white;
@@ -16,6 +15,7 @@ body {
     font-family: 'VT323', monospace;
 }
 
+/* Using viewport units for responsiveness */
 * {
     cursor: default;
     line-height: 3.5vw;
@@ -23,16 +23,16 @@ body {
     padding: 0;
     margin: 0;
     outline: 0;
-
 }
 
-/* Typed text container */
+/* Typed text container – now centered responsively */
 #t {
     position: absolute;
     bottom: 20%;
     left: 50%;
-    width: 800px;
-    margin-left: -300px;
+    width: 80vw;
+    max-width: 800px;
+    transform: translateX(-50%);
     visibility: hidden;
     white-space: pre-line;
 }
@@ -40,30 +40,34 @@ body {
     text-indent: 0 !important;
 }
 
-
 /* Logo and Next button container */
 #logoContainer {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
-    margin-top: 5%;
+    z-index: 1000;
+    width: 90vw;
+    max-width: 600px;
 }
 
-/* Logo styles */
+/* Logo styles remain the same */
 #logo {
-    display: none;
     margin: 0 auto;
+    display: none;
 }
-
 #logo img {
-    max-width: 40%;
+    max-width: 100%;
     height: auto;
 }
 
-/* Next button styles */
 #next {
-    display: none;
     margin-top: 20px;
+    display: none;
 }
 
+/* Next button styling */
 #next button {
     padding: 0.8em 1.5em;
     font-size: 2vw;
@@ -75,9 +79,9 @@ body {
     font-family: 'VT323', monospace;
 }
 
-/* Skip button styling */
+/* Skip button – fixed at top right */
 #skip {
-    position: absolute;
+    position: fixed;
     top: 10px;
     right: 10px;
     padding: 0.5em 1em;
@@ -105,11 +109,27 @@ kbd {
     color: magenta;
 }
 
-/* Responsive adjustments */
+/* Mute button – fixed at top right */
+#mute {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 0.5em 1em;
+    background-color: mediumslateblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+    font-size: 1.5vw;
+    display: none;
+}
+
+/* Responsive adjustments for smaller screens */
 @media (max-width: 800px) {
     #t {
-        width: 400px;
-        margin-left: -200px;
+        width: 90vw;
+        max-width: 400px;
     }
     #skip {
         font-size: 2vw;
@@ -123,23 +143,6 @@ kbd {
 #highlight {
     transition: background-color 1s ease;
 }
-
 #highlight.active {
     background-color: yellow;
 }
-/* Mute button styling */
-#mute {
-    display: none;
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 0.5em 1em;
-    background-color: mediumslateblue;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'VT323', monospace;
-    font-size: 1.5vw;
-}
-
