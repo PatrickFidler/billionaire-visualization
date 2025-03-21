@@ -1,35 +1,106 @@
 window.WealthComparison = class WealthComparison {
     constructor(containerSelector) {
         this.container = d3.select(containerSelector);
-        this.conversionFactor = 1000;
+        this.conversionFactor = 1000; // Dollars per pixel conversion factor
         this.wealthItems = [];
         this.selectedBillionaire = null;
         this.planeTriviaAnimated = false;
         this.skipAnimation = false;
 
-        // Define multiple zoom messages with their thresholds.
-        this.zoomMessages = [
-            { threshold: 400000, message: "The average US house costs around $400,000!", triggered: false },
-            { threshold: 300000, message: "A luxury sports car can cost about $300,000!", triggered: false },
-            { threshold: 100e6, message: "Did you know a Boeing 767 costs $300 million?", triggered: false },
-            { threshold: 35000, message: "The average college tuition is roughly $35,000 per year!", triggered: false },
-            { threshold: 7.5e6, message: "The Titanic cost about $7.5 million to build (1912)!", triggered: false },
-            { threshold: 400e9, message: "Elon Musk Has 400 Billion Dollars as of Jan 2025", triggered: false },
-            { threshold: 214e9, message: "the budget of Ontario in 2024 is 214.5 Billion", triggered: false }
+        // Currency conversion: 1 CAD = 0.75 USD
+        const CAD_TO_USD = 0.75;
 
+        // Array of zoom threshold messages for trivia
+        this.zoomMessages = [
+            {
+                threshold: 6500 * CAD_TO_USD,
+                message: "The average Canadian university tuition is about $4,875 per year!",
+                triggered: false
+            },
+            {
+                threshold: 40000 * CAD_TO_USD,
+                message: "The average Canadian car costs about $30,000!",
+                triggered: false
+            },
+            {
+                threshold: 2e9 * CAD_TO_USD,
+                message: "The tallest building in Canada currently under construction in Toronto Costs about 1.4 billion!",
+                triggered: false
+            },
+            {
+                threshold: 50000,
+                message: "A fancy Stanley Cup replica can cost around $50,000!",
+                triggered: false
+            },
+            {
+                threshold: 100000 * CAD_TO_USD,
+                message: "A 'luxury' Canadian car can easily be $75,000!",
+                triggered: false
+            },
+            {
+                threshold: 329900 * CAD_TO_USD,
+                message: "The typical Canadian household has a median net worth of about $247,425!",
+                triggered: false
+            },
+            {
+                threshold: 800000 * CAD_TO_USD,
+                message: "The average Canadian home costs around $600,000!",
+                triggered: false
+            },
+            {
+                threshold: 1.5e6 * CAD_TO_USD,
+                message: "A cottage in Muskoka might run you about $1.125 million!",
+                triggered: false
+            },
+            {
+                threshold: 63e6 * CAD_TO_USD,
+                message: "The CN Tower was built for about $47 million in 1976!",
+                triggered: false
+            },
+            {
+                threshold: 70e6,
+                message: "A Bombardier Global 7500 private jet built in Ontario costs around $70 million!",
+                triggered: false
+            },
+            {
+                threshold: 250e6,
+                message: "Drake's net worth is around $250 million!",
+                triggered: false
+            },
+            {
+                threshold: 1e9 * CAD_TO_USD,
+                message: "The average NHL franchise is worth about $750 million!",
+                triggered: false
+            },
+            {
+                threshold: 2.12e9 * CAD_TO_USD,
+                message: "The Toronto Maple Leafs are valued at about $1.59 billion!",
+                triggered: false
+            },
+            {
+                threshold: 40e9 * CAD_TO_USD,
+                message: "David Thomson is worth around $30 billion!",
+                triggered: false
+            },
+            {
+                threshold: 214.5e9 * CAD_TO_USD,
+                message: "Ontario's 2024 budget is approximately $161 billion!",
+                triggered: false
+            }
+            // A new message for the selected billionaire will be added dynamically in wrangleData()
         ];
 
-        // Set up zoom behavior.
+        // Set up D3 zoom behavior
         this.zoom = d3.zoom()
             .scaleExtent([0.04, 99999])
             .wheelDelta((event) => -event.deltaY * 0.0002)
             .on("zoom", (event) => {
-                if (this.containerGroup.selectAll("rect").empty()) {
-                    return;
+                if (this.containerGroup && !this.containerGroup.selectAll("rect").empty()) {
+                    this.updateZoom(event.transform.k);
                 }
-                this.updateZoom(event.transform.k);
             });
 
+        // Initialize SVG and layout groups
         this.svg = null;
         this.width = 1000;
         this.height = 1000;
@@ -37,28 +108,75 @@ window.WealthComparison = class WealthComparison {
         this.textGroup = null;
         this.triviaDisplay = null;
 
+        // Listen for a selected billionaire event
         eventDispatcher.on("billionaireSelected.wealth", (billionaire) => {
             console.log("Billionaire selected:", billionaire);
-            // Convert net worth from billions to dollars.
+
+            // Convert net worth from billions to dollars
             this.selectedBillionaire = {
                 Name: billionaire.Name,
                 NetWorth: billionaire.NetWorth * 1e9
             };
-            const wealthValue = +document.getElementById("wealth-input").value;
+
+            const wealthValue = +document.getElementById("wealth-input")?.value;
             if (wealthValue > 0) {
                 this.wrangleData(wealthValue);
             }
+
+            // Update Clippy’s introductory message with the new billionaire
+            this.updateClippyIntro();
         });
     }
 
+    /**
+     * Initialize the visualization by setting up Clippy, input form, SVG, trivia display, and loading billionaires.
+     */
     init() {
+        const billionaireName = this.selectedBillionaire ? this.selectedBillionaire.Name : "Elon Musk";
+
+        // Create Clippy instance
+        this.clippyWealth = new Clippy({
+            defaultImage: 'css/images/clippy.gif',
+            defaultText: `
+                Wow, what a journey we've had learning about <strong>${billionaireName}</strong>!
+                Now let's do something fun: compare <em>your</em> wealth to theirs.
+                Enter an amount below and press <em>Compare Wealth</em> to see how you stack up!
+            `,
+            bubblePosition: 'top'
+        });
+
         this.container.style("box-sizing", "border-box");
+
         this.createInputForm();
         this.createSVG();
         this.createTriviaDisplay();
         this.loadBillionaires();
     }
 
+    /**
+     * Update Clippy's introductory text when a new billionaire is selected.
+     */
+    updateClippyIntro() {
+        if (!this.clippyWealth) return;
+        const billionaireName = this.selectedBillionaire ? this.selectedBillionaire.Name : "Elon Musk";
+
+        this.clippyWealth.setText(`
+            Wow, what a journey we've had learning about <strong>${billionaireName}</strong>!
+            Now let's do something fun: compare <em>your</em> wealth to theirs.
+            Enter an amount below and press <em>Compare Wealth</em> to see how you stack up!
+        `);
+        // Optionally reposition Clippy relative to the "Compare Wealth" button
+        const generateBtn = document.getElementById("generate-btn");
+        if (generateBtn) {
+            this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: 60, offsetY: -350 });
+        } else {
+            this.clippyWealth.show();
+        }
+    }
+
+    /**
+     * Create the input form for users to enter their wealth and trigger comparison.
+     */
     createInputForm() {
         const inputContainer = this.container.append("div")
             .attr("class", "input-container")
@@ -73,20 +191,45 @@ window.WealthComparison = class WealthComparison {
             .attr("placeholder", "e.g. 50000")
             .style("margin-right", "5px");
 
+        // Button to trigger wealth comparison
         inputContainer.append("button")
             .attr("id", "generate-btn")
-            .text("Generate Square")
+            .text("Compare Wealth")
             .on("click", () => {
                 const wealthValue = +document.getElementById("wealth-input").value;
                 if (wealthValue > 0) {
                     this.wrangleData(wealthValue);
+
+                    const billionaireName = this.selectedBillionaire ? this.selectedBillionaire.Name : "Elon Musk";
+
+                    // Update Clippy's message after user clicks the button
+                    this.clippyWealth.setText(`
+                        Notice these squares? Each pixel in the chart corresponds to a specific amount of money, so the 
+                        bigger the square, the more wealth it represents. Everything here is to scale,
+                        meaning if one square is twice as wide, it’s showing four times the money! That’s why billionaire 
+                        fortunes take up so much space—they’re massive when you visualize every dollar.
+                        Try zooming out to see just how huge those bigger squares are and see how you compare to <strong>${billionaireName}</strong>.
+                        It's <em>a lot</em> of money, so it may take a bit of zooming!
+                    `);
+                    // Ensure Clippy is visible again
+                    this.clippyWealth.show();
                 } else {
                     alert("Please enter a valid wealth amount.");
                 }
             });
 
+        // Position Clippy
+        setTimeout(() => {
+            const generateBtn = document.getElementById("generate-btn");
+            if (generateBtn) {
+                this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: 60, offsetY: -350 });
+            }
+        }, 0);
     }
 
+    /**
+     * Create the main SVG element and associated groups for the visualization and legend.
+     */
     createSVG() {
         this.svg = this.container.append("svg")
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
@@ -94,19 +237,20 @@ window.WealthComparison = class WealthComparison {
             .style("width", "100%")
             .style("height", "100%");
 
+        // Create groups for zoomable content, squares, labels, and legend
         this.zoomGroup = this.svg.append("g").attr("class", "zoom-group");
         this.containerGroup = this.zoomGroup.append("g").attr("class", "squares-group");
         this.textGroup = this.zoomGroup.append("g").attr("class", "labels-group");
-
         this.legendGroup = this.svg.append("g").attr("class", "legend-group");
 
+        // Create legend elements
         this.xAxisLabel = this.legendGroup.append("text")
             .attr("class", "x-axis-label")
             .attr("x", this.width / 2)
             .attr("y", 20)
             .attr("text-anchor", "middle")
             .style("font-size", "14px")
-            .text(`Wealth scale: $${(this.conversionFactor).toFixed(2)} per pixel`);
+            .text(`Wealth scale: $${this.conversionFactor.toFixed(2)} per pixel`);
 
         this.pixelSample = this.legendGroup.append("rect")
             .attr("class", "pixel-sample")
@@ -124,11 +268,15 @@ window.WealthComparison = class WealthComparison {
             .attr("y", 45)
             .attr("text-anchor", "start")
             .style("font-size", "12px")
-            .text(`= $${(this.conversionFactor).toFixed(2)} per pixel`);
+            .text(`= $${this.conversionFactor.toFixed(2)} per pixel`);
 
+        // Attach zoom behavior to the SVG
         this.svg.call(this.zoom);
     }
 
+    /**
+     * Create a fixed-position trivia display for showing zoom messages.
+     */
     createTriviaDisplay() {
         this.triviaDisplay = d3.select("body").append("div")
             .attr("class", "trivia-display")
@@ -148,9 +296,12 @@ window.WealthComparison = class WealthComparison {
             .style("visibility", "hidden");
     }
 
+    /**
+     * Load a default list of billionaire options if none is selected.
+     */
     loadBillionaires() {
         this.billionaireOptions = [
-            { name: "Elon Musk", wealth: 250e9 },
+            { name: "Elon Musk", wealth: 151e9 },
             { name: "Jeff Bezos", wealth: 190e9 },
             { name: "Bill Gates", wealth: 130e9 },
             { name: "Mark Zuckerberg", wealth: 120e9 },
@@ -159,9 +310,13 @@ window.WealthComparison = class WealthComparison {
     }
 
     /**
-     * Processes the selected billionaire's wealth and user wealth
+     * Process user input wealth and selected billionaire to create a list of wealth items,
+     * sort them, and update the visualization.
+     *
+     * @param {number} userWealth - The wealth amount entered by the user.
      */
     wrangleData(userWealth) {
+        // Determine selected billionaire data; default to Elon Musk if none selected
         let selectedBillionaireData;
         if (this.selectedBillionaire) {
             selectedBillionaireData = {
@@ -172,27 +327,141 @@ window.WealthComparison = class WealthComparison {
             selectedBillionaireData = this.billionaireOptions.find(b => b.name === "Elon Musk");
         }
 
+        // Remove any existing billionaire message and add a new one for the selected billionaire
+        this.zoomMessages = this.zoomMessages.filter(msg => !msg.isBillionaireMsg);
+        this.zoomMessages.push({
+            threshold: selectedBillionaireData.wealth,
+            message: `Your selected billionaire ${selectedBillionaireData.name} is worth around $${selectedBillionaireData.wealth.toLocaleString()}!`,
+            triggered: false,
+            isBillionaireMsg: true
+        });
+
+        const CAD_TO_USD = 0.75;
+
+        // Prepare the array of wealth items to display
         this.wealthItems = [
-            { name: "Elon Musk (2025)", wealth: 400e9, color: "black", fill: "none" },
-            { name: selectedBillionaireData.name, wealth: selectedBillionaireData.wealth, color: "red", fill: "none" },
-            { name: "Ontario Budget", wealth: 14e9, color: "orange", fill: "none" },
-            { name: "Cost of a Building", wealth: 1e9, color: "purple", fill: "none" },
-            { name: "Cost of a Plane", wealth: 100e6, color: "green", fill: "none" },
-            { name: "Your Wealth", wealth: userWealth, color: "blue", fill: "blue", opacity: 0.5 }
+            {
+                name: "Ontario Budget (2024)",
+                wealth: 214.5e9 * CAD_TO_USD,
+                color: "orange",
+                fill: "none"
+            },
+            // {
+            //     name: "Toronto Maple Leafs (Franchise Value)",
+            //     wealth: 2.12e9 * CAD_TO_USD,
+            //     color: "darkblue",
+            //     fill: "none"
+            // },
+            {
+                name: "Drake's Net Worth",
+                wealth: 250e6,
+                color: "darkgreen",
+                fill: "none"
+            },
+            {
+                name: "David Thomson (2025)",
+                wealth: 40e9 * CAD_TO_USD,
+                color: "black",
+                fill: "none"
+            },
+            // Selected billionaire
+            {
+                name: selectedBillionaireData.name,
+                wealth: selectedBillionaireData.wealth,
+                color: "red",
+                fill: "none"
+            },
+            {
+                name: "Bombardier Global 7500",
+                wealth: 70e6,
+                color: "green",
+                fill: "none"
+            },
+            {
+                name: "Average NHL Franchise",
+                wealth: 1e9 * CAD_TO_USD,
+                color: "brown",
+                fill: "none"
+            },
+            {
+                name: "Average Canadian Home",
+                wealth: 800000 * CAD_TO_USD,
+                color: "blue",
+                fill: "none"
+            },
+            {
+                name: "Vacation Cottage",
+                wealth: 1.5e6 * CAD_TO_USD,
+                color: "cadetblue",
+                fill: "none"
+            },
+            {
+                name: "Stanley Cup Replica",
+                wealth: 50000,
+                color: "silver",
+                fill: "none"
+            },
+            {
+                name: "Luxury Canadian Car",
+                wealth: 100000 * CAD_TO_USD,
+                color: "teal",
+                fill: "none"
+            },
+            {
+                name: "Average Car",
+                wealth: 30000 * CAD_TO_USD,
+                color: "teal",
+                fill: "none"
+            },
+            {
+                name: "Median Canadian Household Net Worth",
+                wealth: 329900 * CAD_TO_USD,
+                color: "darkred",
+                fill: "none"
+            },
+            {
+                name: "Average Canadian University Tuition",
+                wealth: 6500 * CAD_TO_USD,
+                color: "magenta",
+                fill: "none"
+            },
+            {
+                name: "Your Wealth",
+                wealth: userWealth,
+                color: "navy",
+                fill: "navy",
+                opacity: 0.5
+            },
+            {
+                name: "CN Tower Construction Cost (1976)",
+                wealth: 63e6 * CAD_TO_USD,
+                color: "teal",
+                fill: "none"
+            },
+            {
+                name: "The One skyscraper",
+                wealth: 2e9 * CAD_TO_USD,
+                color: "purple",
+                fill: "none"
+            }
         ];
 
-        // Sort so the largest square is drawn first.
+        // Sort wealth items
         this.wealthItems.sort((a, b) => b.wealth - a.wealth);
         this.updateVis();
     }
 
     /**
-     * Draws the squares and labels.
+     * Update the visualization by drawing squares for each wealth item and adding labels.
      */
     updateVis() {
+        if (!this.containerGroup || !this.textGroup) return;
+
+        // Clear previous visualization elements
         this.containerGroup.selectAll("*").remove();
         this.textGroup.selectAll("*").remove();
 
+        // Draw each wealth item as a square
         this.wealthItems.forEach(item => {
             const area = item.wealth / this.conversionFactor;
             const side = Math.sqrt(area);
@@ -212,6 +481,7 @@ window.WealthComparison = class WealthComparison {
                 .text(`${item.name}: $${item.wealth.toLocaleString()}`);
         });
 
+        // Add labels for each wealth item
         this.wealthItems.forEach(item => {
             this.textGroup.append("text")
                 .attr("id", `label-${item.name.replace(/\s+/g, '-')}`)
@@ -224,6 +494,7 @@ window.WealthComparison = class WealthComparison {
                 .datum(item);
         });
 
+        // Zoom in on the "Your Wealth" square
         const userItem = this.wealthItems.find(d => d.name === "Your Wealth");
         if (userItem) {
             const userSide = Math.sqrt(userItem.wealth / this.conversionFactor);
@@ -232,7 +503,9 @@ window.WealthComparison = class WealthComparison {
     }
 
     /**
-     * Zooms to the "Your Wealth" square.
+     * Zoom the view so that the "Your Wealth" square is centered and scaled appropriately.
+     *
+     * @param {number} userSide - The side length of the "Your Wealth" square.
      */
     zoomToUserSquare(userSide) {
         const margin = 20;
@@ -240,6 +513,7 @@ window.WealthComparison = class WealthComparison {
         const translateX = (this.width - userSide * scale) / 2;
         const translateY = (this.height - userSide * scale) / 2;
         this.skipAnimation = true;
+
         this.svg.transition()
             .duration(750)
             .call(this.zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale))
@@ -249,10 +523,55 @@ window.WealthComparison = class WealthComparison {
     }
 
     /**
-     * Updates squares, labels, and triggers trivia animations based on zoom.
+     * Update the positions and sizes of squares and labels based on the current zoom scale.
+     *
+     * @param {number} scale - The current zoom scale.
      */
     updateZoom(scale) {
-        // Update squares and labels as before...
+        // Identify "Your Wealth" and the selected billionaire items
+        const userItem = this.wealthItems.find(d => d.name === "Your Wealth");
+        const billionaireItem = this.wealthItems.find(d => d.name === (this.selectedBillionaire?.Name || "Elon Musk"));
+
+        // Helper function to check if two wealth values are within ±10%
+        function isClose(value1, value2) {
+            if (value2 === 0) return false;
+            const ratio = value1 / value2;
+            return ratio > 0.99 && ratio < 1.1;
+        }
+
+        // Reset any label offsets for each item
+        if (userItem) {
+            userItem.offsetX = 0;
+            userItem.offsetY = 0;
+        }
+        if (billionaireItem) {
+            billionaireItem.offsetX = 0;
+            billionaireItem.offsetY = 0;
+        }
+
+        // Apply an offset to "Your Wealth" if its wealth is close to any other item
+        if (userItem) {
+            for (const item of this.wealthItems) {
+                if (item !== userItem && isClose(userItem.wealth, item.wealth)) {
+                    userItem.offsetX = -100;
+                    userItem.offsetY = 0;
+                    break;
+                }
+            }
+        }
+
+        // Apply an offset for the selected billionaire if needed
+        if (billionaireItem) {
+            for (const item of this.wealthItems) {
+                if (item !== billionaireItem && isClose(billionaireItem.wealth, item.wealth)) {
+                    billionaireItem.offsetX = -100;
+                    billionaireItem.offsetY = 0;
+                    break;
+                }
+            }
+        }
+
+        // Update square sizes based on the zoom scale
         this.containerGroup.selectAll(".wealth-square").each((d, i, nodes) => {
             const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
             d3.select(nodes[i])
@@ -260,37 +579,43 @@ window.WealthComparison = class WealthComparison {
                 .attr("height", side);
         });
 
+        // Update labels with new positions and font sizes, applying any offsets
         this.textGroup.selectAll("text").each((d, i, nodes) => {
             const side = Math.sqrt(d.wealth / this.conversionFactor) * scale;
             let x, y, fontSize;
-            if (scale >= 4) {
+
+            // Positioning logic based on zoom scale
+            if (scale >= 10) {
                 x = side;
                 y = Math.max(15, side / 2);
                 fontSize = 15;
-            } else if (scale >= 3.99) {
+            } else if (scale >= 11.44) {
                 x = side;
                 y = Math.max(15, side / 2);
                 fontSize = Math.max(15, scale);
-            } else if (scale >= 3.98) {
-                x = side;
-                y = Math.max(15, side / 2);
-                fontSize = Math.max(15, 10 * scale);
             } else {
                 x = side + 10;
                 const totalLabels = this.wealthItems.length;
                 y = 15 + (totalLabels - 1 - i) * 20;
                 fontSize = 15;
             }
+
+            // Apply any calculated offsets
+            const offsetX = d.offsetX || 0;
+            const offsetY = d.offsetY || 0;
+            x += offsetX;
+            y += offsetY;
+
             d3.select(nodes[i])
                 .attr("x", x)
                 .attr("y", y)
                 .style("font-size", `${fontSize}px`);
         });
 
+        // Check zoom messages if not skipping animation
         if (!this.skipAnimation) {
             let triggeredMessage = null;
             for (let msg of this.zoomMessages) {
-                // If the threshold is given as a money value (e.g. > 1000), compute the zoom threshold.
                 let effectiveThreshold = msg.threshold;
                 if (msg.threshold > 1000) {
                     effectiveThreshold = this.width * Math.sqrt(this.conversionFactor / msg.threshold);
@@ -307,17 +632,23 @@ window.WealthComparison = class WealthComparison {
             }
         }
 
+        // Update legend with current zoom scale and wealth per pixel
         const wealthPerPixel = this.conversionFactor / (scale * scale);
         this.xAxisLabel.text(
             `Zoom: ${scale.toFixed(2)} | Wealth scale: $${wealthPerPixel.toFixed(2)} per pixel`
         );
         const rectArea = 20 * 20;
         const rectValue = rectArea * wealthPerPixel;
-        this.pixelSampleLabel.text(`= $${rectValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+        this.pixelSampleLabel.text(`= $${rectValue.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`);
     }
 
     /**
-     * Animates a trivia message that slides in and out.
+     * Animate the trivia display with a given message.
+     *
+     * @param {string} message - The trivia message to display.
      */
     animateTriviaMessage(message) {
         this.triviaDisplay
@@ -325,11 +656,11 @@ window.WealthComparison = class WealthComparison {
             .style("visibility", "visible")
             .style("opacity", "1")
             .style("right", "-400px")
-            .style("bottom", "100px")      // initial vertical position
+            .style("bottom", "100px")
             .transition()
             .duration(2000)
             .style("right", "0px")
-            .style("bottom", "100px")     // final vertical position (higher up)
+            .style("bottom", "100px")
             .transition()
             .delay(3000)
             .duration(1000)
@@ -338,5 +669,4 @@ window.WealthComparison = class WealthComparison {
                 this.triviaDisplay.style("visibility", "hidden");
             });
     }
-
 };
