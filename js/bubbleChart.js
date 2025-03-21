@@ -14,7 +14,7 @@ class bubbleChart {
         let vis = this;
 
         // svg margins
-        vis.margin = {top: 40, right: 40, bottom: 20, left: 40};
+        vis.margin = {top: 40, right: 40, bottom: 40, left: 40};
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -31,7 +31,7 @@ class bubbleChart {
             .attr("id", "bubble-title")
             .append('text')
             .text("Billionaire Industries")
-            .attr('transform', `translate(${vis.width / 2}, ${-vis.margin.top/2})`)
+            .attr('transform', `translate(${vis.width / 2}, 10)`)
             .attr('text-anchor', 'middle');
 
         // scales
@@ -51,6 +51,15 @@ class bubbleChart {
         vis.svg.append("g")
             .attr("class", "y-axis axis")
             .call(vis.yAxis);
+
+        // y-axis label
+        vis.svg.select(".y-axis")
+            .append("text")
+            .attr("x", 0)
+            .attr("y", 20)
+            .attr("fill", "black")
+            .attr("transform", "rotate(-90,0,0)")
+            .text("Number of Billionaires in Industry")
 
         // define zoom behavior
         vis.zoomFunction = function(event) {

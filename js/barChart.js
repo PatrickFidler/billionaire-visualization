@@ -14,7 +14,7 @@ class barChart {
         let vis = this;
 
         // svg margins
-        vis.margin = {top: 40, right: 20, bottom: 20, left: 40};
+        vis.margin = {top: 40, right: 40, bottom: 40, left: 40};
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
 
@@ -30,8 +30,17 @@ class barChart {
             .attr('class', 'title')
             .append('text')
             .attr("id", "bar-title")
-            .text("Normalized Histogram of Billionaires' Highest Attained Education")
+            .text("Billionaires' Highest Attained Education")
             .attr('transform', `translate(${vis.width / 2}, 10)`)
+            .attr('text-anchor', 'middle');
+
+        // self-made chart sub-title
+        vis.svg.select('.title')
+            .append('text')
+            .attr("id", "bar-subtitle")
+            .attr("opacity", 0)
+            .text("\"Self-made\": Having become successful or rich by one's own efforts.")
+            .attr('transform', `translate(${vis.width / 2}, 35)`)
             .attr('text-anchor', 'middle');
 
         // scales
@@ -48,7 +57,8 @@ class barChart {
             .scale(vis.x);
 
         vis.yAxis = d3.axisLeft()
-            .scale(vis.y);
+            .scale(vis.y)
+            .tickFormat(d3.format(".0%"));
 
         vis.svg.append("g")
             .attr("class", "x-axis axis")
@@ -57,6 +67,15 @@ class barChart {
         vis.svg.append("g")
             .attr("class", "y-axis axis")
             .call(vis.yAxis);
+
+        // y-axis label
+        vis.svg.select(".y-axis")
+            .append("text")
+            .attr("x", 0)
+            .attr("y", 20)
+            .attr("fill", "black")
+            .attr("transform", "rotate(-90,0,0)")
+            .text("Percentage of Billionaires")
 
         // react to button
         vis.selectedDegree = "bachelor";
@@ -67,11 +86,15 @@ class barChart {
                 vis.toggle = !vis.toggle;
                 if (vis.toggle) {
                     vis.svg.select("#bar-title")
-                        .text("Normalized Histogram of Billionaires' Highest Attained Education")
+                        .text("Billionaires' Highest Attained Education")
+                    vis.svg.select("#bar-subtitle")
+                        .attr("opacity", 0)
                 }
                 else {
                     vis.svg.select("#bar-title")
-                        .text("Normalized Histogram of Self-made Billionaires")
+                        .text("Self-made Billionaires")
+                    vis.svg.select("#bar-subtitle")
+                        .attr("opacity", 100)
                 }
                 vis.wrangleData();
             })
@@ -124,6 +147,32 @@ class barChart {
                     return "grey"
                 }
             })
+
+            if (vis.selectedSelfMade === 1) { vis.printSelectedSelfMade =  "self-made"; }
+            else { vis.printSelectedSelfMade =  "not self-made"; }
+
+            d3.select("#education-intro").append("p")
+                .html(function() {
+                    if (vis.selectedDegree === "drop out") {
+                        return `Your selected billionaire, <b>${selected.Name}</b>, is a <b>${vis.selectedDegree}</b>!
+                        Moreover, <b>${selected.Name}</b> is <b>${vis.printSelectedSelfMade}</b>!<br> 
+                        Learn more about billionaires' education below, and make sure to click on the button
+                        that says Click Me! to see whether most billionaires are self-made or not?!`
+                    }
+                    else if (vis.selectedDegree === "high school") {
+                        return `Your selected billionaire, <b>${selected.Name}</b>, only went to <b>${vis.selectedDegree}</b>!
+                        Moreover, <b>${selected.Name}</b> is <b>${vis.printSelectedSelfMade}</b>!<br>
+                        Learn more about billionaires' education below, and make sure to click on the button
+                        that says Click Me! to see whether most billionaires are self-made or not?!`
+                    }
+                    else {
+                        return `Your selected billionaire, <b>${selected.Name}</b>, has a <b>${vis.selectedDegree}</b> degree!
+                        Moreover, <b>${selected.Name}</b> is <b>${vis.printSelectedSelfMade}</b>!<br>
+                        Learn more about billionaires' education below, and make sure to click on the button
+                        that says Click Me! to see whether most billionaires are self-made or not?!`
+                    }
+                })
+
             vis.wrangleData();
         })
 
@@ -147,7 +196,7 @@ class barChart {
             .attr("height", d => vis.height - vis.y(d.value) )
             .attr("fill", (d, i) => {
                 if (d.key === vis.selectedDegree || parseInt(d.key) === vis.selectedSelfMade) {
-                    return "red";
+                    return "purple";
                 } else {
                     return "grey";
                 }
@@ -161,7 +210,17 @@ class barChart {
 
         vis.barLabels.enter().append("text")
             .merge(vis.barLabels)
-            .text(d => d.key);
+            .text(d => {
+                if (vis.toggle) {
+                    return d.key;
+                }
+                else {
+                    if (d.key) { return "self-made"; }
+                    return "not self-made";
+                }
+            });
+
+
 
     }
 
