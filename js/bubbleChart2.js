@@ -117,13 +117,7 @@ class bubbleChart2 {
                         return "grey";
                     }
                 })
-                .attr("opacity", (d, i) => {
-                    if (d.source === selectedSource) {
-                        return 1;
-                    } else {
-                        return 0.5;
-                    }
-                })
+                .attr("opacity", 1.0)     // NOTE: Setting opacity=1.0 here increases loading speed.
                 .attr("stroke", "black")
                 .on('mouseover', function(event, d){
                     d3.select(this)
