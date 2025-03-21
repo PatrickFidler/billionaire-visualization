@@ -122,7 +122,7 @@ class bubbleChart {
             vis.svg.selectAll(".bubble")
                 .attr("fill", (d, i) => {
                     if (d.source === selectedSource) {
-                        return "red"
+                        return "purple"
                     }
                     else {
                         return "grey"
@@ -136,6 +136,12 @@ class bubbleChart {
                         return vis.r(d.count);
                     }
                 })
+
+            d3.select("#industry-intro").select("p")
+                .html(
+                    `Your selected billionaire, <b>${selected.Name}</b>, is in the <b>${selectedSource}</b> industry!<br>
+                     Explore billionaires' industries below. There are so many ways to make a billion dollars!`
+                )
         })
 
         // update scales and axis
@@ -167,14 +173,14 @@ class bubbleChart {
             .attr("cy", (d, i) => vis.y(d.count) )
             .attr("fill", (d, i) => {
                 if (d.source === selectedSource) {
-                    return "red";
+                    return "purple";
                 } else {
                     return "grey";
                 }
             })
             .on('mouseover', function(event, d){
                 d3.select(this)
-                    .attr('fill', 'orange');
+                    .attr('fill', 'black');
 
                 vis.tooltip
                     .style("opacity", 1)
@@ -182,14 +188,14 @@ class bubbleChart {
                     .style("top", event.pageY + "px")
                     .html(`
                          <div style="border: thin solid black; border-radius: 5px; background: white; padding: 0.5em">
-                             <h4>${d.source}<h4>
+                             <text>${d.source}</text>
                          </div>`);
             })
             .on('mouseout', function(event, d){
                 d3.select(this)
                     .attr("fill", d => {
                         if (d.source === selectedSource) {
-                            return "red";
+                            return "purple";
                         } else {
                             return "grey";
                         }

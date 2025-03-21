@@ -151,7 +151,7 @@ class barChart {
             if (vis.selectedSelfMade === 1) { vis.printSelectedSelfMade =  "self-made"; }
             else { vis.printSelectedSelfMade =  "not self-made"; }
 
-            d3.select("#education-intro").append("p")
+            d3.select("#education-intro").select("p")
                 .html(function() {
                     if (vis.selectedDegree === "drop out") {
                         return `Your selected billionaire, <b>${selected.Name}</b>, is a <b>${vis.selectedDegree}</b>!

@@ -50,7 +50,7 @@ function initMain(data) {
     console.log(data[0]);
 
     educationVis = new barChart("education", data[0]);
-    industryVis = new bubbleChart("industry", data[0]);
+    industryVis = new bubbleChart2("industry", data[0]);
     infoVis = new textChart("info", data[0]);
 
     const wealthApp = new window.WealthComparison('#wealth');
