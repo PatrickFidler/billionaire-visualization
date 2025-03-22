@@ -4,7 +4,6 @@ window.WealthComparison = class WealthComparison {
         this.conversionFactor = 1000; // Dollars per pixel conversion factor
         this.wealthItems = [];
         this.selectedBillionaire = null;
-        this.planeTriviaAnimated = false;
         this.skipAnimation = false;
 
         // Currency conversion: 1 CAD = 0.75 USD

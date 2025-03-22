@@ -139,10 +139,10 @@ const SearchControl = L.Control.extend({
                 return;
             }
 
-            // Filter billionaireNames for matching query
-            const filtered = billionaireNames.filter(name =>
-                name.toLowerCase().includes(query)
-            );
+            // Filter billionaireNames and sort
+            const filtered = billionaireNames
+                .filter(name => name.toLowerCase().includes(query))
+                .sort((a, b) => a.localeCompare(b));
 
             if (filtered.length === 0) {
                 suggestions.style("display", "none");
