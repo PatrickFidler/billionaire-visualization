@@ -76,7 +76,7 @@ function scrollDown() {
     if ((window.stage != 1 || window.bil_selected === 1) && window.stage != 5) {
         window.scrollBy({
             top: window.innerHeight, 
-            behavior: 'smooth' 
+            behavior: 'instant' 
         });
         window.stage = window.stage + 1;
         if ((window.stage === 1 && window.bil_selected === 0) || window.stage === 5) {
@@ -97,7 +97,7 @@ function scrollUp() {
     if (window.stage != 0) {
         window.scrollBy({
             top: -window.innerHeight, 
-            behavior: 'smooth' 
+            behavior: 'instant' 
         });
         window.stage = window.stage - 1;
         if (window.stage === 0) {
@@ -117,6 +117,24 @@ function scrollUp() {
             button.style.setProperty('font-size', '16px');
         }
     }
+}
+function restart() {
+    window.scroll({
+        top: 0, 
+        behavior: 'instant' 
+    });
+    window.stage = 0;
+    window.bil_selected = 0;
+    let button = document.getElementById('down-button');
+    button.style.setProperty('background-color', 'rgb(128, 128, 128, 1)');
+    button.style.setProperty('border', 'solid');
+    button.style.setProperty('font-size', '16px');
+    button = document.getElementById('up-button');
+    button.style.setProperty('background-color', 'rgb(128, 128, 128, 0)');
+    button.style.setProperty('border', 'none');
+    button.style.setProperty('font-size', '0');
+
+    // reset map and clippy here
 }
 
 let educationVis, industryVis, infoVis;

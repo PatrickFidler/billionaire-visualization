@@ -19,7 +19,7 @@ h1 {
 }
 
 #down-button {
-    bottom: 15px;
+    bottom: 31px;
     right: 15px;
     background-color: grey;
     border: solid;
@@ -27,11 +27,25 @@ h1 {
 }
 
 #up-button {
-    bottom: 15px;
-    right: 50px;
+    bottom: 31px;
+    right: 46px;
     background-color: rgb(128, 128, 128, 0);
     border: none;
     font-size: 0;
+}
+
+#r-button {
+    position: fixed;
+    padding: 3px 11px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+    bottom: 5px;
+    right: 15px;
+    background-color: grey;
+    border: solid;
+    font-size: 12px;
 }
 
 .tooltip {
