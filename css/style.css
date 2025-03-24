@@ -19,17 +19,17 @@ h1 {
 }
 
 #down-button {
-    bottom: 31px;
+    bottom: 44px;
     right: 15px;
-    background-color: grey;
-    border: solid;
+    background-color: rgb(124, 104, 238);
+    border: none;
     font-size: 16px;
 }
 
 #up-button {
-    bottom: 31px;
+    bottom: 44px;
     right: 46px;
-    background-color: rgb(128, 128, 128, 0);
+    background-color: rgba(124, 104, 238, 0);
     border: none;
     font-size: 0;
 }
@@ -41,11 +41,24 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
     z-index: 1000;
-    bottom: 5px;
+    bottom: 18px;
     right: 15px;
-    background-color: grey;
-    border: solid;
+    background-color: rgb(124, 104, 238);
+    border: none;
     font-size: 12px;
+}
+
+#button-box {
+    bottom: 15px;
+    right: 12px;
+    width: 64px;
+    height: 66px;
+    background-color: rgba(128, 128, 128, 0.5);
+    border: none;
+    position: fixed;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
 }
 
 .tooltip {

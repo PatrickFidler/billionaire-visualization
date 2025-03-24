@@ -172,8 +172,7 @@ class textChart {
         eventDispatcher.on("billionaireSelected", function(selected){
             window.bil_selected = 1; // disgusting but it works for now
             let button = document.getElementById('down-button');
-            button.style.setProperty('background-color', 'rgb(128, 128, 128, 1)');
-            button.style.setProperty('border', 'solid');
+            button.style.setProperty('background-color', 'rgba(124, 104, 238, 1)');
             button.style.setProperty('font-size', '16px');
 
 

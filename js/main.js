@@ -81,14 +81,12 @@ function scrollDown() {
         window.stage = window.stage + 1;
         if ((window.stage === 1 && window.bil_selected === 0) || window.stage === 5) {
             let button = document.getElementById('down-button');
-            button.style.setProperty('background-color', 'rgb(128, 128, 128, 0)');
-            button.style.setProperty('border', 'none');
+            button.style.setProperty('background-color', 'rgba(124, 104, 238, 0)');
             button.style.setProperty('font-size', '0');
         }
         if (window.stage === 1) {
             let button = document.getElementById('up-button');
-            button.style.setProperty('background-color', 'rgb(128, 128, 128, 1)');
-            button.style.setProperty('border', 'solid');
+            button.style.setProperty('background-color', 'rgba(124, 104, 238, 1)');
             button.style.setProperty('font-size', '16px');
         }
     }
@@ -102,18 +100,15 @@ function scrollUp() {
         window.stage = window.stage - 1;
         if (window.stage === 0) {
             let button = document.getElementById('up-button');
-            button.style.setProperty('background-color', 'rgb(128, 128, 128, 0)');
-            button.style.setProperty('border', 'none');
+            button.style.setProperty('background-color', 'rgba(124, 104, 238, 0)');
             button.style.setProperty('font-size', '0');
             button = document.getElementById('down-button');
-            button.style.setProperty('background-color', 'rgb(128, 128, 128, 1)');
-            button.style.setProperty('border', 'solid');
+            button.style.setProperty('background-color', 'rgba(124, 104, 238, 1)');
             button.style.setProperty('font-size', '16px');
         }
         if (window.stage === 4) {
             let button = document.getElementById('down-button');
-            button.style.setProperty('background-color', 'rgb(128, 128, 128, 1)');
-            button.style.setProperty('border', 'solid');
+            button.style.setProperty('background-color', 'rgba(124, 104, 238, 1)');
             button.style.setProperty('font-size', '16px');
         }
     }
@@ -126,12 +121,10 @@ function restart() {
     window.stage = 0;
     window.bil_selected = 0;
     let button = document.getElementById('down-button');
-    button.style.setProperty('background-color', 'rgb(128, 128, 128, 1)');
-    button.style.setProperty('border', 'solid');
+    button.style.setProperty('background-color', 'rgba(124, 104, 238, 1)');
     button.style.setProperty('font-size', '16px');
     button = document.getElementById('up-button');
-    button.style.setProperty('background-color', 'rgb(128, 128, 128, 0)');
-    button.style.setProperty('border', 'none');
+    button.style.setProperty('background-color', 'rgba(124, 104, 238, 0)');
     button.style.setProperty('font-size', '0');
 
     // reset map and clippy here
