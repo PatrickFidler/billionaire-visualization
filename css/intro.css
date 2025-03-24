@@ -15,7 +15,7 @@ body {
     font-family: 'VT323', monospace;
 }
 
-/* Using viewport units for responsiveness */
+
 * {
     cursor: default;
     line-height: 3.5vw;
@@ -25,7 +25,7 @@ body {
     outline: 0;
 }
 
-/* Typed text container – now centered responsively */
+
 #t {
     position: absolute;
     bottom: 20%;
@@ -40,7 +40,7 @@ body {
     text-indent: 0 !important;
 }
 
-/* Logo and Next button container */
+
 #logoContainer {
     position: fixed;
     top: 10%;
@@ -52,7 +52,7 @@ body {
     max-width: 600px;
 }
 
-/* Logo styles remain the same */
+
 #logo {
     margin: 0 auto;
     display: none;
@@ -79,7 +79,7 @@ body {
     font-family: 'VT323', monospace;
 }
 
-/* Skip button – fixed at top right */
+/* Skip button*/
 #skip {
     position: fixed;
     top: 10px;
@@ -109,7 +109,7 @@ kbd {
     color: magenta;
 }
 
-/* Mute button – fixed at top right */
+/* Mute button */
 #mute {
     position: fixed;
     top: 10px;
@@ -125,7 +125,7 @@ kbd {
     display: none;
 }
 
-/* Responsive adjustments for smaller screens */
+/*adjustments for smaller screens */
 @media (max-width: 800px) {
     #t {
         width: 90vw;

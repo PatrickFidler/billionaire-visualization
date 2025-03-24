@@ -152,7 +152,7 @@ h1 {
 #start,
 #map,
 .leaflet-container {
-    background-color: white; /* or any color you like */
+    background-color: white;
 }
 
 #info,
