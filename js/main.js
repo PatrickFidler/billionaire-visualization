@@ -115,8 +115,8 @@ function scrollUp() {
 }
 function restart() {
     window.scroll({
-        top: 0, 
-        behavior: 'instant' 
+        top: 0,
+        behavior: 'instant'
     });
     window.stage = 0;
     window.bil_selected = 0;
@@ -127,7 +127,19 @@ function restart() {
     button.style.setProperty('background-color', 'rgba(124, 104, 238, 0)');
     button.style.setProperty('font-size', '0');
 
-    // reset map and clippy here
+
+    if (window.map) {
+        window.map.setView([20, 0], 2);
+        window.map.closePopup();
+    }
+
+
+    if (window.clippy) {
+        window.clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -450 });
+        window.clippy.setImage('css/images/clippy.gif');
+        window.clippy.setText("Hey there! Ready to explore? Click an icon on the map to pick a billionaire, you might need to zoom in a bit because there are so many of them! You can also filter them by net worth, search for your favorite, or hit the random button and I'll pick one for you!");
+        window.clippy.show();
+    }
 }
 
 let educationVis, industryVis, infoVis;

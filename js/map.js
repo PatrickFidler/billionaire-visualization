@@ -206,7 +206,7 @@ const searchControl = new SearchControl({ position: 'topleft' });
 /*********************************************
  *  Initialize the Leaflet map
  *********************************************/
-const map = L.map("map", {
+let map = L.map("map", {
     center: [20, 0],
     zoom: 2,
     minZoom: 2,
@@ -218,13 +218,15 @@ const map = L.map("map", {
 /*********************************************
  *  Clippy Initialization
  *********************************************/
-const clippy = new Clippy({
+let clippy = new Clippy({
     defaultImage: 'css/images/clippy.gif',
     defaultText: "Hey there! Ready to explore? Click an icon on the map to pick a billionaire, you might need to zoom in a bit because there are so many of them! You can also filter them by net worth, search for your favorite, or hit the random button and I'll pick one for you!",
     bubblePosition: 'top'
 });
 
-const nextButton = document.querySelector('.scroll-button');
+const nextButton = document.querySelector('#up-button');
+window.map = map;
+window.clippy = clippy;
 
 /*********************************************
  *  Tile Layer (OpenStreetMap)
@@ -305,7 +307,7 @@ d3.csv("data/cleaned_forbes_billionaires.csv").then(data => {
             clippy.setImage('css/images/clippy2.gif');
             clippy.setText("You selected a billionaire! When you are ready, press Next to see more info.");
             if (nextButton) {
-                clippy.showRelativeToElement(nextButton, { offsetX: -10, offsetY: 120 });
+                clippy.showRelativeToElement(nextButton, { offsetX: -40, offsetY: 130 });
             }
         });
 
@@ -503,4 +505,6 @@ function cleanName(name) {
         .trim() // Remove extra spaces
         .toLowerCase() // Convert to lowercase
         .replace(/\s+/g, "-"); // Replace spaces with hyphens
+
+
 }
