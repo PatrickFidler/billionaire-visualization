@@ -1,4 +1,3 @@
-
 class bubbleChart2 {
 
     constructor(parentElement, data) {
@@ -41,9 +40,9 @@ class bubbleChart2 {
             .range([1, 20]);
 
         // define zoom behavior
-        vis.zoomFunction = function(event) {
+        vis.zoomFunction = function (event) {
             vis.svg.attr("transform", event.transform);
-        }
+        };
 
         vis.zoom = d3.zoom()
             .scaleExtent([1, 20])
@@ -58,7 +57,7 @@ class bubbleChart2 {
             .attr("y", 0)
             .attr("width", vis.width)
             .attr("height", vis.height)
-            .attr("opacity", 0)
+            .attr("opacity", 0);
 
         // tooltip
         vis.tooltip = d3.select("body").append('div')
@@ -81,10 +80,10 @@ class bubbleChart2 {
             count: count
         }));
 
-        vis.counts.forEach((d, i) => {
-            d.x = 0;
-            d.y = 0;
-        })
+        vis.counts.forEach(d => {
+            d.x = Math.random() * vis.width;
+            d.y = Math.random() * vis.height;
+        });
 
         vis.displayData = vis.counts;
 
@@ -94,116 +93,113 @@ class bubbleChart2 {
     // redraw the chart with new dimensions if screen is resized
     resize() {
         let vis = this;
-    
+
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
-    
+
         vis.svg.attr("width", vis.width + vis.margin.left + vis.margin.right)
                .attr("height", vis.height + vis.margin.top + vis.margin.bottom);
-    
+
         vis.zoom.translateExtent([[0, 0], [vis.width, vis.height]]);
         vis.svg.call(vis.zoom);
-    
+
         vis.svg.select("rect")
             .attr("width", vis.width)
             .attr("height", vis.height);
-    
+
         // vis.svg.select("#bubble-title text")
         //     .attr("x", vis.width / 2);
-    
+
         this.updateVis();
     }
-    
+
 
     updateVis() {
         let vis = this;
+        let selectedSource = "software";
 
-        vis.r
-            .domain([0, d3.max(vis.displayData, d => d.count)])
+        // Adds Drag Physics (Looks Cool)
+        function dragstarted(event, d) {
+            event.sourceEvent.stopPropagation();
+            if (!event.active) vis.simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            event.sourceEvent.stopPropagation();
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            event.sourceEvent.stopPropagation();
+            if (!event.active) vis.simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        vis.r.domain([0, d3.max(vis.displayData, d => d.count)]);
 
         vis.simulation = d3.forceSimulation(vis.displayData)
+            .force("charge", d3.forceManyBody().strength(-5))
             .force("x", d3.forceX(vis.width / 2).strength(0.05)) // Centered X
             .force("y", d3.forceY(vis.height / 2).strength(0.05)) // Centered Y
-            .force("collide", d3.forceCollide(d => vis.r(d.count) + 4)) // Prevent overlap
+            .force("collide", d3.forceCollide(d => vis.r(d.count) +5)) // Prevent overlap
             .on("tick", ticked);
 
+
+        let circles = vis.svg.selectAll("circle")
+            .data(vis.displayData)
+            .join("circle")
+            .attr("class", "bubble")
+            .attr("r", d => vis.r(d.count))
+            .attr("fill", d => d.source === selectedSource ? "purple" : "grey")
+            .attr("opacity", 1.0)
+            .attr("stroke", "black")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on('mouseover', function (event, d) {
+                d3.select(this).attr('fill', 'black');
+                vis.tooltip
+                    .style("opacity", 1)  // NOTE: Setting opacity=1.0 here increases loading speed.
+                    .style("left", event.pageX + 20 + "px")
+                    .style("top", event.pageY + "px")
+                    .html(`
+                  <div style="border: thin solid black; border-radius: 5px; background: white; padding: 0.5em">
+                      <text>${d.source}</text>
+                  </div>`);
+            })
+            .on('mouseout', function (event, d) {
+                d3.select(this)
+                    .attr("fill", d => d.source === selectedSource ? "purple" : "grey");
+                vis.tooltip
+                    .style("opacity", 0)
+                    .style("left", 0)
+                    .style("top", 0)
+                    .html(``);
+            });
+
         function ticked() {
-            vis.svg.selectAll("circle")
-                .data(vis.displayData)
-                .join("circle")
-                .attr("class", "bubble")
+            circles
                 .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
-                .attr("r", d => vis.r(d.count))
-                .attr("fill", (d, i) => {
-                    if (d.source === selectedSource) {
-                        return "purple";
-                    } else {
-                        return "grey";
-                    }
-                })
-                .attr("opacity", 1.0)     // NOTE: Setting opacity=1.0 here increases loading speed.
-                .attr("stroke", "black")
-                .on('mouseover', function(event, d){
-                    d3.select(this)
-                        .attr('fill', 'black');
-
-                    vis.tooltip
-                        .style("opacity", 1)
-                        .style("left", event.pageX + 20 + "px")
-                        .style("top", event.pageY + "px")
-                        .html(`
-                         <div style="border: thin solid black; border-radius: 5px; background: white; padding: 0.5em">
-                             <text>${d.source}</text>
-                         </div>`);
-                })
-                .on('mouseout', function(event, d){
-                    d3.select(this)
-                        .attr("fill", d => {
-                            if (d.source === selectedSource) {
-                                return "purple";
-                            } else {
-                                return "grey";
-                            }
-                        })
-
-                    vis.tooltip
-                        .style("opacity", 0)
-                        .style("left", 0)
-                        .style("top", 0)
-                        .html(``);
-                })
+                .attr("cy", d => d.y);
         }
 
         // listen for selected billionaire
-        let selectedSource = "software";
-        eventDispatcher.on("billionaireSelected.industry", function(selected){
+        eventDispatcher.on("billionaireSelected.industry", function (selected) {
             selectedSource = selected.Source;
             // console.log("SOURCE:", selectedSource);
-            vis.svg.selectAll(".bubble")
-                .attr("fill", (d, i) => {
-                    if (d.source === selectedSource) {
-                        return "purple"
-                    }
-                    else {
-                        return "grey"
-                    }
-                })
-                .attr("opacity", (d, i) => {
-                    if (d.source === selectedSource) {
-                        return 1.0;
-                    } else {
-                        return 0.5;
-                    }
-                })
+            circles.attr("fill", d => d.source === selectedSource ? "purple" : "grey")
+                .attr("opacity", d => d.source === selectedSource ? 1.0 : 0.5);
 
             d3.select("#industry-intro").select("p")
                 .html(
                     `Your selected billionaire, <b>${selected.Name}</b>, is in the <b>${selectedSource}</b> industry!<br>
-                     Explore billionaires' industries below. There are so many ways to make a billion dollars!`
-                )
-        })
-
+                 Explore billionaires' industries below. There are so many ways to make a billion dollars!`
+                );
+        });
     }
-
 }
