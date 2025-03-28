@@ -169,7 +169,7 @@ class barChart {
             vis.selectedSelfMade = parseInt(selected.Self_made);    // TODO: Remove parseInt when dispatcher connected to real data.
             vis.svg.selectAll(".bar").attr("fill", (d, i) => {
                 if (d.degree === vis.selectedDegree || parseInt(d.Self_made) === vis.selectedSelfMade) { // TODO: Remove parseInt when dispatcher connected to real data.
-                    return "red"
+                    return "mediumslateblue"
                 }
                 else {
                     return "grey"
@@ -224,7 +224,7 @@ class barChart {
             .attr("height", d => vis.height - vis.y(d.value) )
             .attr("fill", (d, i) => {
                 if (d.key === vis.selectedDegree || parseInt(d.key) === vis.selectedSelfMade) {
-                    return "purple";
+                    return "mediumslateblue";
                 } else {
                     return "grey";
                 }

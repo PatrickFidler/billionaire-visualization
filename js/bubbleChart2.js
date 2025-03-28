@@ -63,6 +63,10 @@ class bubbleChart2 {
         vis.tooltip = d3.select("body").append('div')
             .attr('id', 'bubble-tooltip');
 
+        vis.selectedSource = "software";
+
+        vis.simulation = d3.forceSimulation();
+
         this.wrangleData();
 
     }
@@ -107,16 +111,17 @@ class bubbleChart2 {
             .attr("width", vis.width)
             .attr("height", vis.height);
 
-        // vis.svg.select("#bubble-title text")
-        //     .attr("x", vis.width / 2);
-
-        this.updateVis();
+        // vis.updateVis();
+        vis.simulation
+            .force("x", d3.forceX(vis.width / 2).strength(0.03)) // Centered X
+            .force("y", d3.forceY(vis.height / 2).strength(0.03)) // Centered Y
+            .alpha(0.5)
+            .restart();
     }
 
 
     updateVis() {
         let vis = this;
-        let selectedSource = "software";
 
         // Adds Drag Physics (Looks Cool)
         function dragstarted(event, d) {
@@ -141,21 +146,26 @@ class bubbleChart2 {
 
         vis.r.domain([0, d3.max(vis.displayData, d => d.count)]);
 
-        vis.simulation = d3.forceSimulation(vis.displayData)
-            .force("charge", d3.forceManyBody().strength(-5))
-            .force("x", d3.forceX(vis.width / 2).strength(0.05)) // Centered X
-            .force("y", d3.forceY(vis.height / 2).strength(0.05)) // Centered Y
-            .force("collide", d3.forceCollide(d => vis.r(d.count) +5)) // Prevent overlap
+        // vis.simulation = d3.forceSimulation(vis.displayData)
+        //     .force("charge", d3.forceManyBody().strength(-2))
+        //     .force("x", d3.forceX(vis.width / 2).strength(0.03)) // Centered X
+        //     .force("y", d3.forceY(vis.height / 2).strength(0.03)) // Centered Y
+        //     .force("collide", d3.forceCollide(d => vis.r(d.count) + 5)) // Prevent overlap
+        //     .on("tick", ticked);
+        vis.simulation.nodes(vis.displayData)
+            .force("charge", d3.forceManyBody().strength(-2))
+            .force("x", d3.forceX(vis.width / 2).strength(0.03)) // Centered X
+            .force("y", d3.forceY(vis.height / 2).strength(0.03)) // Centered Y
+            .force("collide", d3.forceCollide(d => vis.r(d.count) + 5)) // Prevent overlap
             .on("tick", ticked);
-
 
         let circles = vis.svg.selectAll("circle")
             .data(vis.displayData)
             .join("circle")
             .attr("class", "bubble")
             .attr("r", d => vis.r(d.count))
-            .attr("fill", d => d.source === selectedSource ? "purple" : "grey")
-            .attr("opacity", 1.0)
+            .attr("fill", d => d.source === vis.selectedSource ? "magenta" : "grey")
+            .attr("opacity", d => d.source === vis.selectedSource ? 1.0 : 0.5 )
             .attr("stroke", "black")
             .call(d3.drag()
                 .on("start", dragstarted)
@@ -174,7 +184,7 @@ class bubbleChart2 {
             })
             .on('mouseout', function (event, d) {
                 d3.select(this)
-                    .attr("fill", d => d.source === selectedSource ? "purple" : "grey");
+                    .attr("fill", d => d.source === vis.selectedSource ? "magenta" : "grey");
                 vis.tooltip
                     .style("opacity", 0)
                     .style("left", 0)
@@ -190,15 +200,16 @@ class bubbleChart2 {
 
         // listen for selected billionaire
         eventDispatcher.on("billionaireSelected.industry", function (selected) {
-            selectedSource = selected.Source;
+            vis.selectedSource = selected.Source;
             // console.log("SOURCE:", selectedSource);
-            circles.attr("fill", d => d.source === selectedSource ? "purple" : "grey")
-                .attr("opacity", d => d.source === selectedSource ? 1.0 : 0.5);
+            circles.attr("fill", d => d.source === vis.selectedSource ? "magenta" : "grey")
+                .attr("opacity", d => d.source === vis.selectedSource ? 1.0 : 0.5);
 
             d3.select("#industry-intro").select("p")
                 .html(
-                    `Your selected billionaire, <b>${selected.Name}</b>, is in the <b>${selectedSource}</b> industry!<br>
-                 Explore billionaires' industries below. There are so many ways to make a billion dollars!`
+                    `Your selected billionaire, <b>${selected.Name}</b>, is in the <b>${vis.selectedSource}</b> industry!<br>
+                 Explore billionaires' industries below. Can you find the ${vis.selectedSource} industry?! HINT: It's <b>magenta</b>! <br>
+                 THE TAKEAWAY: There are so many ways to make a billion dollars! By the way, have you tried dragging the circles around?`
                 );
         });
     }
