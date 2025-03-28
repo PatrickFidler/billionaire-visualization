@@ -113,8 +113,10 @@ const SearchControl = L.Control.extend({
             .style("padding", "5px")
             .style("margin-bottom", "5px")
             .on("click", function() {
-                if (billionaireNames.length === 0) return;
-                const randomName = billionaireNames[Math.floor(Math.random() * billionaireNames.length)];
+                // Filter billionaireNames based on active filters
+                const filteredNames = billionaireNames.filter(name => activeFilters[nameToMarker[name].category]);
+                if (filteredNames.length === 0) return;
+                const randomName = filteredNames[Math.floor(Math.random() * filteredNames.length)];
                 input.property("value", randomName);
                 suggestions.html("").style("display", "none");
                 goToBillionaire(randomName);
@@ -139,9 +141,12 @@ const SearchControl = L.Control.extend({
                 return;
             }
 
-            // Filter billionaireNames and sort
+            // Filter billionaireNames based on the query and active filter state
             const filtered = billionaireNames
-                .filter(name => name.toLowerCase().includes(query))
+                .filter(name =>
+                    name.toLowerCase().includes(query) &&
+                    activeFilters[nameToMarker[name].category]
+                )
                 .sort((a, b) => a.localeCompare(b));
 
             if (filtered.length === 0) {
@@ -307,7 +312,7 @@ d3.csv("data/cleaned_forbes_billionaires.csv").then(data => {
             clippy.setImage('css/images/clippy2.gif');
             clippy.setText("You selected a billionaire! When you are ready, press Next to see more info.");
             if (nextButton) {
-                clippy.showRelativeToElement(nextButton, { offsetX: -40, offsetY: 130 });
+                clippy.showRelativeToElement(nextButton, { offsetX: -70, offsetY: 120 });
             }
         });
 
@@ -416,7 +421,7 @@ legend.addTo(map);
  *********************************************/
 const randomBtn = document.querySelector('#randomButton');
 if (randomBtn) {
-    clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -450 });
+    clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -600 });
 }
 
 /*********************************************

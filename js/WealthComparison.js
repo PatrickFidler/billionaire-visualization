@@ -164,10 +164,10 @@ window.WealthComparison = class WealthComparison {
             Now let's do something fun: compare <em>your</em> wealth to theirs.
             Enter an amount below and press <em>Compare Wealth</em> to see how you stack up!
         `);
-        // Optionally reposition Clippy relative to the "Compare Wealth" button
+        // reposition Clippy relative to the "Compare Wealth" button
         const generateBtn = document.getElementById("generate-btn");
         if (generateBtn) {
-            this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: 60, offsetY: -350 });
+            this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: 60, offsetY: -450 });
         } else {
             this.clippyWealth.show();
         }
@@ -211,7 +211,11 @@ window.WealthComparison = class WealthComparison {
                         It's <em>a lot</em> of money, so it may take a bit of zooming!
                     `);
                     // Ensure Clippy is visible again
-                    this.clippyWealth.show();
+                    const generateBtn = document.getElementById("generate-btn");
+                    if (generateBtn) {
+                        this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: 0, offsetY: -300 });
+                    }
+
                 } else {
                     alert("Please enter a valid wealth amount.");
                 }
@@ -221,7 +225,7 @@ window.WealthComparison = class WealthComparison {
         setTimeout(() => {
             const generateBtn = document.getElementById("generate-btn");
             if (generateBtn) {
-                this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: 60, offsetY: -350 });
+                this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: 60, offsetY: -450 });
             }
         }, 0);
     }
@@ -652,6 +656,7 @@ window.WealthComparison = class WealthComparison {
     animateTriviaMessage(message) {
         this.triviaDisplay
             .html(message)
+            .style("font-size", "1.6rem")
             .style("visibility", "visible")
             .style("opacity", "1")
             .style("right", "-400px")
