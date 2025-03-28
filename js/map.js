@@ -336,6 +336,8 @@ legend.onAdd = function (map) {
     div.style.border = '1px solid #ccc';
     div.style.borderRadius = '5px';
     div.style.cursor = 'pointer';
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.disableScrollPropagation(div);
 
     // Title for the legend
     div.innerHTML += '<strong>Net Worth Filter</strong><br><br>';
