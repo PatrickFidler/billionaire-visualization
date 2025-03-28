@@ -1,3 +1,4 @@
+
 class bubbleChart2 {
 
     constructor(parentElement, data) {
@@ -25,15 +26,6 @@ class bubbleChart2 {
             .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
-
-        // // chart title
-        // vis.svg.append('g')
-        //     .attr('class', 'title')
-        //     .attr("id", "bubble-title")
-        //     .append('text')
-        //     .text("Billionaire Industries")
-        //     .attr('transform', `translate(${vis.width / 2}, 10)`)
-        //     .attr('text-anchor', 'middle');
 
         // scales
         vis.r = d3.scaleSqrt()
@@ -63,8 +55,10 @@ class bubbleChart2 {
         vis.tooltip = d3.select("body").append('div')
             .attr('id', 'bubble-tooltip');
 
+        // default selection (upon loading)
         vis.selectedSource = "software";
 
+        // define force simulation
         vis.simulation = d3.forceSimulation();
 
         this.wrangleData();
@@ -84,6 +78,7 @@ class bubbleChart2 {
             count: count
         }));
 
+        // define random (x, y) positions for nodes in force simulation
         vis.counts.forEach(d => {
             d.x = Math.random() * vis.width;
             d.y = Math.random() * vis.height;
@@ -93,6 +88,7 @@ class bubbleChart2 {
 
         this.updateVis();
     }
+
 
     // redraw the chart with new dimensions if screen is resized
     resize() {
@@ -111,7 +107,7 @@ class bubbleChart2 {
             .attr("width", vis.width)
             .attr("height", vis.height);
 
-        // vis.updateVis();
+        // restart force simulation
         vis.simulation
             .force("x", d3.forceX(vis.width / 2).strength(0.03)) // Centered X
             .force("y", d3.forceY(vis.height / 2).strength(0.03)) // Centered Y
@@ -123,20 +119,18 @@ class bubbleChart2 {
     updateVis() {
         let vis = this;
 
-        // Adds Drag Physics (Looks Cool)
+        // add drag physics
         function dragstarted(event, d) {
             event.sourceEvent.stopPropagation();
             if (!event.active) vis.simulation.alphaTarget(0.3).restart();
             d.fx = d.x;
             d.fy = d.y;
         }
-
         function dragged(event, d) {
             event.sourceEvent.stopPropagation();
             d.fx = event.x;
             d.fy = event.y;
         }
-
         function dragended(event, d) {
             event.sourceEvent.stopPropagation();
             if (!event.active) vis.simulation.alphaTarget(0);
@@ -144,14 +138,10 @@ class bubbleChart2 {
             d.fy = null;
         }
 
+        // define circle radii
         vis.r.domain([0, d3.max(vis.displayData, d => d.count)]);
 
-        // vis.simulation = d3.forceSimulation(vis.displayData)
-        //     .force("charge", d3.forceManyBody().strength(-2))
-        //     .force("x", d3.forceX(vis.width / 2).strength(0.03)) // Centered X
-        //     .force("y", d3.forceY(vis.height / 2).strength(0.03)) // Centered Y
-        //     .force("collide", d3.forceCollide(d => vis.r(d.count) + 5)) // Prevent overlap
-        //     .on("tick", ticked);
+        // run force simulation
         vis.simulation.nodes(vis.displayData)
             .force("charge", d3.forceManyBody().strength(-2))
             .force("x", d3.forceX(vis.width / 2).strength(0.03)) // Centered X
@@ -159,6 +149,7 @@ class bubbleChart2 {
             .force("collide", d3.forceCollide(d => vis.r(d.count) + 5)) // Prevent overlap
             .on("tick", ticked);
 
+        // draw circles
         let circles = vis.svg.selectAll("circle")
             .data(vis.displayData)
             .join("circle")

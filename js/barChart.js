@@ -107,6 +107,7 @@ class barChart {
 
     }
 
+
     wrangleData() {
         let vis = this;
 
@@ -115,13 +116,12 @@ class barChart {
             vis.counts = d3.rollup(vis.data, leaves => leaves.length, d => d.degree);
         }
         else {
-            // generate counts by self made
+            // generate counts by self-made
             vis.counts = d3.rollup(vis.data, leaves => leaves.length, d => d.Self_made);
         }
 
-        vis.total = d3.sum(vis.counts.values());
-
         // generate normalized counts
+        vis.total = d3.sum(vis.counts.values());
         vis.normalizedCounts = Array.from(vis.counts, ([key, value]) => ({
             key: key,
             value: value / vis.total
@@ -134,6 +134,7 @@ class barChart {
 
         this.updateVis();
     }
+
 
     // redraw the chart with new dimensions if screen is resized
     resize() {
@@ -156,9 +157,16 @@ class barChart {
     
         vis.svg.select(".y-axis")
             .call(vis.yAxis);
+
+        vis.svg.select("#bar-title")
+            .attr('transform', `translate(${vis.width / 2}, 10)`)
+
+        vis.svg.select("#bar-subtitle")
+            .attr('transform', `translate(${vis.width / 2}, 35)`)
     
         vis.updateVis();
     }
+
 
     updateVis() {
         let vis = this;
@@ -179,6 +187,7 @@ class barChart {
             if (vis.selectedSelfMade === 1) { vis.printSelectedSelfMade =  "self-made"; }
             else { vis.printSelectedSelfMade =  "not self-made"; }
 
+            // create textual description based on selected billionaire
             d3.select("#education-intro").select("p")
                 .html(function() {
                     if (vis.selectedDegree === "drop out") {
@@ -247,8 +256,6 @@ class barChart {
                     return "not self-made";
                 }
             });
-
-
 
     }
 
