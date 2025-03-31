@@ -67,8 +67,18 @@ window.WealthComparison = class WealthComparison {
                 triggered: false
             },
             {
+                threshold: 19e6,
+                message: "The Bugatti La Voiture Noire, the most expensive new car, costs around $19 million!",
+                triggered: false
+            },
+            {
                 threshold: 1e9 * CAD_TO_USD,
                 message: "The average NHL franchise is worth about $750 million!",
+                triggered: false
+            },
+            {
+                threshold: 350e6,
+                message: "A Boeing 777 commercial airplane seating 426 passengers costs approximately $442 million!",
                 triggered: false
             },
             // {
@@ -82,8 +92,38 @@ window.WealthComparison = class WealthComparison {
                 triggered: false
             },
             {
-                threshold: 214.5e9 * CAD_TO_USD,
-                message: "Ontario's 2024 budget is approximately $161 billion!",
+                threshold: 447e9,
+                message: "The richest a Billionaire has ever been is Elon Musk, worth $447 billion in December 2024",
+                triggered: false
+            },
+            {
+                threshold: 1e9,
+                message: "Instagram was acquired by Facebook for about $1 billion!",
+                triggered: false
+            },
+            {
+                threshold: 100e6,
+                message: "A private island can cost up to $100 million!",
+                triggered: false
+            },
+            {
+                threshold: 500e6,
+                message: "Jeff Bezos' superyacht 'Koru' costs around $500 million!",
+                triggered: false
+            },
+            {
+                threshold: 356e6,
+                message: "Producing a blockbuster movie like 'Avengers' costs about $356 million!",
+                triggered: false
+            },
+            {
+                threshold: 40e9,
+                message: "We can end world hunger globally for around $40 billion per year.",
+                triggered: false
+            },
+            {
+                threshold: 1999e9,
+                message: "Hopefully this helped you grasp just how enormous their wealth really is. Should so much of wealth exist in the hands of one person? What do you think?",
                 triggered: false
             }
             // A new message for the selected billionaire will be added dynamically in wrangleData()
@@ -91,7 +131,7 @@ window.WealthComparison = class WealthComparison {
 
         // Set up D3 zoom behavior
         this.zoom = d3.zoom()
-            .scaleExtent([0.01, 99999])
+            .scaleExtent([0.02, 99999])
             .wheelDelta((event) => -event.deltaY * 0.0002)
             .on("zoom", (event) => {
                 if (this.containerGroup && !this.containerGroup.selectAll("rect").empty()) {
@@ -295,8 +335,7 @@ window.WealthComparison = class WealthComparison {
             .style("font-size", "16px")
             .style("text-align", "center")
             .style("width", "auto")
-            .style("min-width", "300px")
-            .style("visibility", "hidden");
+            .style("visibility", "hidden")
     }
 
     /**
@@ -344,9 +383,15 @@ window.WealthComparison = class WealthComparison {
         // Prepare the array of wealth items to display
         this.wealthItems = [
             {
-                name: "Ontario Budget (2024)",
-                wealth: 214.5e9 * CAD_TO_USD,
+                name: "Richest a Billionaire has ever been (Elon Musk)",
+                wealth: 447e9,
                 color: "orange",
+                fill: "none"
+            },
+            {
+                name: "Bugatti La Voiture Noire (Most Expensive Car)",
+                wealth: 19e6, // $19 million
+                color: "pink",
                 fill: "none"
             },
             // {
@@ -369,7 +414,7 @@ window.WealthComparison = class WealthComparison {
             },
             // Selected billionaire
             {
-                name: selectedBillionaireData.name,
+                name: selectedBillionaireData.name + "(Your Selected Billionaire)",
                 wealth: selectedBillionaireData.wealth,
                 color: "red",
                 fill: "none"
@@ -399,9 +444,15 @@ window.WealthComparison = class WealthComparison {
                 fill: "none"
             },
             {
+                name: "Commerical Aircraft",
+                wealth: 442e6,
+                color: "darkcyan",
+                fill: "none"
+            },
+            {
                 name: "Average Canadian Yearly Income",
                 wealth: 57700 * CAD_TO_USD,
-                color: "silver",
+                color: "magenta",
                 fill: "none"
             },
             {
@@ -425,7 +476,7 @@ window.WealthComparison = class WealthComparison {
             {
                 name: "Average Canadian University Tuition",
                 wealth: 6500 * CAD_TO_USD,
-                color: "magenta",
+                color: "black",
                 fill: "none"
             },
             {
@@ -445,6 +496,36 @@ window.WealthComparison = class WealthComparison {
                 name: "The One skyscraper",
                 wealth: 2e9 * CAD_TO_USD,
                 color: "purple",
+                fill: "none"
+            },
+            {
+                name: "Instagram's Sale Price to Facebook",
+                wealth: 1e9,
+                color: "purple",
+                fill: "none"
+            },
+            {
+                name: "Private Island",
+                wealth: 100e6,
+                color: "goldenrod",
+                fill: "none"
+            },
+            {
+                name: "Jeff Bezos' Yacht (Koru)",
+                wealth: 500e6,
+                color: "darkorange",
+                fill: "none"
+            },
+            {
+                name: "Blockbuster Movie Production (Avengers)",
+                wealth: 356e6,
+                color: "dodgerblue",
+                fill: "none"
+            },
+            {
+                name: "Cost to End World Hunger (Annual)",
+                wealth: 40e9,
+                color: "darkviolet",
                 fill: "none"
             }
         ];
@@ -490,7 +571,11 @@ window.WealthComparison = class WealthComparison {
                 .attr("id", `label-${item.name.replace(/\s+/g, '-')}`)
                 .attr("x", 0)
                 .attr("y", 0)
-                .style("fill", "black")
+                .style("fill", () => {
+                    if (item.name === "Your Wealth") return "red";
+                    if (item.name.includes(this.selectedBillionaire?.Name)) return "red";
+                    return "black";
+                })
                 .style("font-size", "12px")
                 .style("font-weight", "bold")
                 .text(item.name)
@@ -656,7 +741,7 @@ window.WealthComparison = class WealthComparison {
     animateTriviaMessage(message) {
         this.triviaDisplay
             .html(message)
-            .style("font-size", "1.6rem")
+            .style("font-size", "2rem")
             .style("visibility", "visible")
             .style("opacity", "1")
             .style("right", "-400px")

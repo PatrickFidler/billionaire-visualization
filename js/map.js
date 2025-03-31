@@ -220,6 +220,24 @@ let map = L.map("map", {
     maxBoundsViscosity: 1.0
 });
 
+const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+});
+
+const stadiaToner = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.{ext}?api_key=5479aa23-cb20-4654-a783-80c24670537d', {
+    minZoom: 0,
+    maxZoom: 20,
+    attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    ext: 'png'
+});
+
+const StadiaWater = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.{ext}?api_key=5479aa23-cb20-4654-a783-80c24670537d', {
+    minZoom: 1,
+    maxZoom: 16,
+    attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    ext: 'jpg'
+});
+
 /*********************************************
  *  Clippy Initialization
  *********************************************/
@@ -236,9 +254,53 @@ window.clippy = clippy;
 /*********************************************
  *  Tile Layer (OpenStreetMap)
  *********************************************/
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
-}).addTo(map);
+// osmLayer.addTo(map);
+stadiaToner.addTo(map);
+
+
+
+const baseMaps = {
+    "OpenStreetMap": osmLayer,
+    "Stadia Toner": stadiaToner,
+    "Stadia Watercolor": StadiaWater
+};
+
+
+const layerControl = L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
+
+
+setTimeout(() => {
+    const controlBox = document.querySelector('.leaflet-control-layers-list');
+    if (controlBox) {
+        const label = document.createElement('div');
+        label.innerHTML = '<strong>Map Style</strong>';
+        label.style.fontFamily = 'VT323';
+        label.style.padding = '5px 0';
+        label.style.fontSize = '14px';
+        label.style.borderBottom = '1px solid #ccc';
+        label.style.marginBottom = '5px';
+
+        controlBox.insertBefore(label, controlBox.firstChild);
+    }
+}, 0);
+
+
+
+// const layerLabel = L.DomUtil.create('div', 'leaflet-control map-style-label');
+// layerLabel.innerHTML = '<strong>Map Style:</strong>';
+// layerLabel.style.background = 'white';
+// layerLabel.style.padding = '5px';
+// layerLabel.style.border = '1px solid #ccc';
+// layerLabel.style.borderRadius = '5px';
+// layerLabel.style.marginBottom = '5px';
+// layerLabel.style.marginLeft = '10px';
+// layerLabel.style.display = 'inline-block';
+//
+//
+// const leafletControls = document.querySelector('.leaflet-control-layers');
+// if (leafletControls && leafletControls.parentNode) {
+//     leafletControls.parentNode.insertBefore(layerLabel, leafletControls);
+// }
 
 /*********************************************
  *  Add the Search Control to the Map
@@ -423,7 +485,7 @@ legend.addTo(map);
  *********************************************/
 const randomBtn = document.querySelector('#randomButton');
 if (randomBtn) {
-    clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -370 });
+    clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -600 });
 }
 
 /*********************************************

@@ -200,7 +200,7 @@ class bubbleChart2 {
                 .html(
                     `Your selected billionaire, <b>${selected.Name}</b>, is in the <b>${vis.selectedSource}</b> industry!<br>
                  Explore billionaires' industries below. Can you find the ${vis.selectedSource} industry?! HINT: It's <b>magenta</b>! <br>
-                 THE TAKEAWAY: There are so many ways to make a billion dollars! By the way, have you tried dragging the circles around?`
+                 THE TAKEAWAY: There are so many ways to make a billion dollars! By the way, you can drag the circles around to compare different catagories!`
                 );
         });
     }
