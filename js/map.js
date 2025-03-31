@@ -402,7 +402,7 @@ legend.onAdd = function (map) {
     L.DomEvent.disableScrollPropagation(div);
 
     // Title for the legend
-    div.innerHTML += '<strong>Net Worth Filter</strong><br><br>';
+    div.innerHTML += '<strong>Net Worth Filter</strong><br><center>(USD$)</center>';
 
     // Store icon elements for later update
     const legendIcons = {};

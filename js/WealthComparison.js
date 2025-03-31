@@ -222,7 +222,7 @@ window.WealthComparison = class WealthComparison {
             .style("margin-bottom", "10px");
 
         inputContainer.append("label")
-            .text("Enter your wealth ($): ");
+            .text("Enter your wealth (USD$): ");
 
         inputContainer.append("input")
             .attr("type", "number")
