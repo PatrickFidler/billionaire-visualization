@@ -243,7 +243,7 @@ const StadiaWater = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_water
  *********************************************/
 let clippy = new Clippy({
     defaultImage: 'css/images/clippy.gif',
-    defaultText: "Hey there! Ready to explore? Click an icon on the map to pick a billionaire, you might need to zoom in a bit because there are so many of them! You can also filter them by net worth, search for your favorite, or hit the random button and I'll pick one for you!",
+    defaultText: "Hey there! Ready to explore? Click an icon on the map to pick a billionaire. You might need to zoom in a bit because there are so many of them! You can also filter them by net worth, search for your favorite, or hit the random button and I'll pick one for you!",
     bubblePosition: 'top'
 });
 
@@ -485,7 +485,7 @@ legend.addTo(map);
  *********************************************/
 const randomBtn = document.querySelector('#randomButton');
 if (randomBtn) {
-    clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -600 });
+    clippy.showRelativeToElement(randomBtn, { offsetX: -18, offsetY: -385 });
 }
 
 /*********************************************
