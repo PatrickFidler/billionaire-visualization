@@ -61,6 +61,48 @@ class bubbleChart2 {
         // define force simulation
         vis.simulation = d3.forceSimulation();
 
+        let legend_x = vis.width / 7 - 50;
+        let legend_y = vis.height / 2;
+        vis.svg.append("circle")
+            .attr("cx", legend_x)
+            .attr("cy", legend_y - 50)
+            .attr("r", vis.r(1))
+            .attr("fill", "grey")
+            .attr("opacity", 0.5)
+            .attr("stroke", "black");
+        vis.svg.append("text")
+            .attr("x", legend_x + 30)
+            .attr("y", legend_y - 47)
+            .attr("font-size", "small")
+            .attr("fill", "grey")
+            .text("1 billionaire");
+        vis.svg.append("circle")
+            .attr("cx", legend_x)
+            .attr("cy", legend_y)
+            .attr("r", vis.r(25))
+            .attr("fill", "grey")
+            .attr("opacity", 0.5)
+            .attr("stroke", "black");
+        vis.svg.append("text")
+            .attr("x", legend_x + 30)
+            .attr("y", legend_y + 3)
+            .attr("font-size", "small")
+            .attr("fill", "grey")
+            .text("25 billionaires");
+        vis.svg.append("circle")
+            .attr("cx", legend_x)
+            .attr("cy", legend_y + 50)
+            .attr("r", vis.r(100))
+            .attr("fill", "grey")
+            .attr("opacity", 0.5)
+            .attr("stroke", "black");
+        vis.svg.append("text")
+            .attr("x", legend_x + 30)
+            .attr("y", legend_y + 53)
+            .attr("font-size", "small")
+            .attr("fill", "grey")
+            .text("100 billionaires");
+
         this.wrangleData();
 
     }
@@ -202,47 +244,6 @@ class bubbleChart2 {
                  Explore billionaires' industries below. Can you find the ${vis.selectedSource} industry?! HINT: It's <b>magenta</b>! <br>
                  THE TAKEAWAY: There are so many ways to make a billion dollars! By the way, you can drag the circles around to compare different catagories!`
                 );
-            let legend_x = vis.width / 7 - 50;
-            let legend_y = vis.height / 2;
-            vis.svg.append("circle")
-                .attr("cx", legend_x)
-                .attr("cy", legend_y - 50)
-                .attr("r", vis.r(1))
-                .attr("fill", "grey")
-                .attr("opacity", 0.5)
-                .attr("stroke", "black");
-            vis.svg.append("text")
-                .attr("x", legend_x + 30)
-                .attr("y", legend_y - 47)
-                .attr("font-size", "small")
-                .attr("fill", "grey")
-                .text("1 billionaire");
-            vis.svg.append("circle")
-                .attr("cx", legend_x)
-                .attr("cy", legend_y)
-                .attr("r", vis.r(25))
-                .attr("fill", "grey")
-                .attr("opacity", 0.5)
-                .attr("stroke", "black");
-            vis.svg.append("text")
-                .attr("x", legend_x + 30)
-                .attr("y", legend_y + 3)
-                .attr("font-size", "small")
-                .attr("fill", "grey")
-                .text("25 billionaires");
-            vis.svg.append("circle")
-                .attr("cx", legend_x)
-                .attr("cy", legend_y + 50)
-                .attr("r", vis.r(100))
-                .attr("fill", "grey")
-                .attr("opacity", 0.5)
-                .attr("stroke", "black");
-            vis.svg.append("text")
-                .attr("x", legend_x + 30)
-                .attr("y", legend_y + 53)
-                .attr("font-size", "small")
-                .attr("fill", "grey")
-                .text("100 billionaires");
         });
     }
 }
