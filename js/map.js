@@ -312,7 +312,7 @@ d3.csv("data/cleaned_forbes_billionaires.csv").then(data => {
             clippy.setImage('css/images/clippy2.gif');
             clippy.setText("You selected a billionaire! When you are ready, press Next to see more info.");
             if (nextButton) {
-                clippy.showRelativeToElement(nextButton, { offsetX: -70, offsetY: 120 });
+                clippy.showRelativeToElement(nextButton, { offsetX: -70, offsetY: 150 });
             }
         });
 
@@ -423,7 +423,7 @@ legend.addTo(map);
  *********************************************/
 const randomBtn = document.querySelector('#randomButton');
 if (randomBtn) {
-    clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -600 });
+    clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -370 });
 }
 
 /*********************************************

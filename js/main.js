@@ -139,7 +139,7 @@ function restart() {
 
 
     if (window.clippy) {
-        window.clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -600 });
+        window.clippy.showRelativeToElement(randomBtn, { offsetX: -10, offsetY: -370 });
         window.clippy.setImage('css/images/clippy.gif');
         window.clippy.setText("Hey there! Ready to explore? Click an icon on the map to pick a billionaire, you might need to zoom in a bit because there are so many of them! You can also filter them by net worth, search for your favorite, or hit the random button and I'll pick one for you!");
         window.clippy.show();
