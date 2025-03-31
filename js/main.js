@@ -23,6 +23,10 @@ window.onload = function () {
     window.scrollTo(0, 0);
 };
 
+// complete the "fade in" from the intro page's fade out
+const overlay = document.getElementById('overlay');
+overlay.style.backgroundColor = "rgba(0, 0, 0, 0)";
+
 // for determining scrolling permissions
 window.stage = 0;
 window.bil_selected = 0;
@@ -73,13 +77,13 @@ function initMain(data) {
 
 // helpers for scroll buttons
 function scrollDown() {
-    if ((window.stage != 1 || window.bil_selected === 1) && window.stage != 5) {
+    if ((window.stage != 0 || window.bil_selected === 1) && window.stage != 4) {
         window.scrollBy({
             top: window.innerHeight, 
             behavior: 'instant' 
         });
         window.stage = window.stage + 1;
-        if ((window.stage === 1 && window.bil_selected === 0) || window.stage === 5) {
+        if ((window.stage === 0 && window.bil_selected === 0) || window.stage === 4) {
             let button = document.getElementById('down-button');
             button.style.setProperty('background-color', 'rgba(124, 104, 238, 0)');
             button.style.setProperty('font-size', '0');
@@ -106,7 +110,7 @@ function scrollUp() {
             button.style.setProperty('background-color', 'rgba(124, 104, 238, 1)');
             button.style.setProperty('font-size', '16px');
         }
-        if (window.stage === 4) {
+        if (window.stage === 3) {
             let button = document.getElementById('down-button');
             button.style.setProperty('background-color', 'rgba(124, 104, 238, 1)');
             button.style.setProperty('font-size', '16px');
@@ -121,8 +125,8 @@ function restart() {
     window.stage = 0;
     window.bil_selected = 0;
     let button = document.getElementById('down-button');
-    button.style.setProperty('background-color', 'rgba(124, 104, 238, 1)');
-    button.style.setProperty('font-size', '16px');
+    button.style.setProperty('background-color', 'rgba(124, 104, 238, 0)');
+    button.style.setProperty('font-size', '0');
     button = document.getElementById('up-button');
     button.style.setProperty('background-color', 'rgba(124, 104, 238, 0)');
     button.style.setProperty('font-size', '0');

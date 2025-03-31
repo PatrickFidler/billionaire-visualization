@@ -4,6 +4,19 @@ body {
     font-family: 'VT323', monospace;
 }
 
+/* for cool transition out of intro */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 1);
+    pointer-events: none;
+    z-index: 10000;
+    transition: background-color 2s ease-in-out;
+}
+
 h1 {
     text-align: center;
     margin: 0;
@@ -30,9 +43,9 @@ button {
 #down-button {
     bottom: 44px;
     right: 15px;
-    background-color: rgb(124, 104, 238);
+    background-color: rgba(124, 104, 238, 0);
     border: none;
-    font-size: 16px;
+    font-size: 0;
 }
 
 #up-button {
@@ -45,7 +58,7 @@ button {
 
 #r-button {
     position: fixed;
-    padding: 3px 11px;
+    padding: 3px 13px;
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -60,7 +73,7 @@ button {
 #button-box {
     bottom: 15px;
     right: 12px;
-    width: 64px;
+    width: 66px;
     height: 66px;
     background-color: rgba(128, 128, 128, 0.5);
     border: none;
@@ -68,6 +81,27 @@ button {
     border-radius: 5px;
     cursor: pointer;
     z-index: 1000;
+}
+
+#button-indent1, #button-indent2 {
+    background-color: rgba(128, 128, 128, 0.5);
+    width: 29px;
+    height: 34px;
+    border: none;
+    position: fixed;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+#button-indent1 {
+    bottom: 44px;
+    right: 15px;
+}
+
+#button-indent2 {
+    bottom: 44px;
+    right: 46px;
 }
 
 .tooltip {

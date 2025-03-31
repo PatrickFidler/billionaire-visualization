@@ -57,3 +57,13 @@ $(function(){
         }
     });
 });
+
+// have overlay fade to black, then go to next page
+function fade(){
+    const overlay = document.getElementById('overlay');
+    overlay.style.backgroundColor = "rgba(0, 0, 0, 1)";
+
+    overlay.addEventListener("transitionend", () => {
+        window.location.href = "index.html";
+    }, { once: true });
+}
