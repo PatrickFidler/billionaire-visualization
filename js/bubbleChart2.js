@@ -61,48 +61,6 @@ class bubbleChart2 {
         // define force simulation
         vis.simulation = d3.forceSimulation();
 
-        let legend_x = vis.width / 7 - 50;
-        let legend_y = vis.height / 2;
-        vis.svg.append("circle")
-            .attr("cx", legend_x)
-            .attr("cy", legend_y - 50)
-            .attr("r", vis.r(1))
-            .attr("fill", "grey")
-            .attr("opacity", 0.5)
-            .attr("stroke", "black");
-        vis.svg.append("text")
-            .attr("x", legend_x + 30)
-            .attr("y", legend_y - 47)
-            .attr("font-size", "small")
-            .attr("fill", "grey")
-            .text("1 billionaire");
-        vis.svg.append("circle")
-            .attr("cx", legend_x)
-            .attr("cy", legend_y)
-            .attr("r", vis.r(25))
-            .attr("fill", "grey")
-            .attr("opacity", 0.5)
-            .attr("stroke", "black");
-        vis.svg.append("text")
-            .attr("x", legend_x + 30)
-            .attr("y", legend_y + 3)
-            .attr("font-size", "small")
-            .attr("fill", "grey")
-            .text("25 billionaires");
-        vis.svg.append("circle")
-            .attr("cx", legend_x)
-            .attr("cy", legend_y + 50)
-            .attr("r", vis.r(100))
-            .attr("fill", "grey")
-            .attr("opacity", 0.5)
-            .attr("stroke", "black");
-        vis.svg.append("text")
-            .attr("x", legend_x + 30)
-            .attr("y", legend_y + 53)
-            .attr("font-size", "small")
-            .attr("fill", "grey")
-            .text("100 billionaires");
-
         this.wrangleData();
 
     }
@@ -183,6 +141,52 @@ class bubbleChart2 {
         // define circle radii
         vis.r.domain([0, d3.max(vis.displayData, d => d.count)]);
 
+        // add legend
+        let legend_x = vis.width / 7 - 50;
+        let legend_y = vis.height / 2;
+        vis.svg.append("circle")
+            .attr("class", "legend-circ")
+            .attr("cx", legend_x)
+            .attr("cy", legend_y - 50)
+            .attr("r", vis.r(1))
+            .attr("fill", "grey")
+            .attr("opacity", 0.5)
+            .attr("stroke", "black");
+        vis.svg.append("text")
+            .attr("x", legend_x + 30)
+            .attr("y", legend_y - 47)
+            .attr("font-size", "small")
+            .attr("fill", "grey")
+            .text("1 billionaire");
+        vis.svg.append("circle")
+            .attr("class", "legend-circ")
+            .attr("cx", legend_x)
+            .attr("cy", legend_y)
+            .attr("r", vis.r(25))
+            .attr("fill", "grey")
+            .attr("opacity", 0.5)
+            .attr("stroke", "black");
+        vis.svg.append("text")
+            .attr("x", legend_x + 30)
+            .attr("y", legend_y + 3)
+            .attr("font-size", "small")
+            .attr("fill", "grey")
+            .text("25 billionaires");
+        vis.svg.append("circle")
+            .attr("class", "legend-circ")
+            .attr("cx", legend_x)
+            .attr("cy", legend_y + 50)
+            .attr("r", vis.r(100))
+            .attr("fill", "grey")
+            .attr("opacity", 0.5)
+            .attr("stroke", "black");
+        vis.svg.append("text")
+            .attr("x", legend_x + 30)
+            .attr("y", legend_y + 53)
+            .attr("font-size", "small")
+            .attr("fill", "grey")
+            .text("100 billionaires");
+
         // run force simulation
         vis.simulation.nodes(vis.displayData)
             .force("charge", d3.forceManyBody().strength(-2))
@@ -192,7 +196,7 @@ class bubbleChart2 {
             .on("tick", ticked);
 
         // draw circles
-        let circles = vis.svg.selectAll("circle")
+        let circles = vis.svg.selectAll(".bubble")
             .data(vis.displayData)
             .join("circle")
             .attr("class", "bubble")
