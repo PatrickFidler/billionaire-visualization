@@ -28,18 +28,19 @@ class textChart {
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
         vis.bilimage = vis.svg.append('image')
-            .attr('x', vis.width / 2 - 70 - 260)
-            .attr('y', vis.height / 4 + 10)
+            .attr('x', vis.width / 2 - 420)
+            .attr('y', vis.height / 4 - 25)
             .attr('clip-path', 'inset(0% round 15px)')
-            .attr('width', 250)
-            .attr('height', 250)
+            .attr('width', 300)
+            .attr('height', 300)
 
-        vis.text_x = vis.width / 2 - 50;
-        vis.text_y = vis.height / 4 + 30;
+        vis.text_x = vis.width / 2 - 90;
+        vis.text_y = vis.height / 4 + 5;
+        vis.base_font_size = 20;
 
         vis.svg.append('text')
             .attr('id', 'info-title')
-            .attr('font-size', 30)
+            .attr('font-size', 40)
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
             .text("About Your Billionaire");
@@ -47,7 +48,7 @@ class textChart {
         vis.svg.append('text')
             .attr('id', 'info0')
             .attr('fill', 'mediumslateblue')
-            .attr("stroke-width", "1px")
+            .attr('font-size', 25)
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
             .attr('dy', 30)
@@ -55,6 +56,7 @@ class textChart {
         
         vis.svg.append('text')
             .attr('id', 'info1')
+            .attr('font-size', vis.base_font_size)
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
             .attr('dy', 50)
@@ -62,6 +64,7 @@ class textChart {
         
         vis.svg.append('text')
             .attr('id', 'info2')
+            .attr('font-size', vis.base_font_size)
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
             .attr('dy', 70)
@@ -69,6 +72,7 @@ class textChart {
 
         vis.svg.append('text')
             .attr('id', 'info3')
+            .attr('font-size', vis.base_font_size)
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
             .attr('dy', 90)
@@ -86,6 +90,7 @@ class textChart {
 
         vis.svg.append('text')
             .attr('id', 'info4')
+            .attr('font-size', vis.base_font_size)
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
             .attr('dy', 110)
@@ -93,6 +98,7 @@ class textChart {
 
         vis.svg.append('text')
             .attr('id', 'info5')
+            .attr('font-size', vis.base_font_size)
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
             .attr('dy', 130)
@@ -100,27 +106,58 @@ class textChart {
 
         vis.svg.append('text')
             .attr('id', 'info6')
+            .attr('font-size', vis.base_font_size)
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
             .attr('dy', 150)
             .text("Empty");
         
-        let wiki_button = vis.svg.append('a')
+        vis.wiki_button = vis.svg.append('a')
             .attr('id', 'wiki-button')
             .attr('target', '_blank');
-        wiki_button.append('rect')
+        vis.wiki_button.append('rect')
             .attr('fill', 'mediumslateblue')
             .attr('stroke', 'none')
             .attr('rx', 5)
             .attr('x', vis.text_x)
-            .attr('y', vis.text_y + 170)
-            .attr('width', 40)
-            .attr('height', 20);
-        wiki_button.append('text')
+            .attr('y', vis.text_y + 169)
+            .attr('width', 41)
+            .attr('height', 21);
+        vis.wiki_button.append('text')
             .text("Wiki")
-            .attr('x', vis.text_x + 7)
+            .attr('font-size', vis.base_font_size)
+            .attr('x', vis.text_x + 5)
             .attr('y', vis.text_y)
             .attr('dy', 185)
+            .attr('fill', 'white')
+            .style('text-decoration', 'none')
+            .style('cursor', 'pointer');
+        
+        vis.svg.append('text')
+            .attr('id', 'info7')
+            .attr('font-size', vis.base_font_size)
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y)
+            .attr('dy', 220)
+            .text("Empty");
+        
+        vis.forbes_button = vis.svg.append('a')
+            .attr('id', 'forbes-button')
+            .attr('target', '_blank');
+        vis.forbes_button.append('rect')
+            .attr('fill', 'mediumslateblue')
+            .attr('stroke', 'none')
+            .attr('rx', 5)
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y + 239)
+            .attr('width', 57)
+            .attr('height', 21);
+        vis.forbes_button.append('text')
+            .text("Forbes")
+            .attr('font-size', vis.base_font_size)
+            .attr('x', vis.text_x + 5)
+            .attr('y', vis.text_y)
+            .attr('dy', 255)
             .attr('fill', 'white')
             .style('text-decoration', 'none')
             .style('cursor', 'pointer');
@@ -145,8 +182,8 @@ class textChart {
         vis.svg.attr("width", vis.width + vis.margin.left + vis.margin.right)
                .attr("height", vis.height + vis.margin.top + vis.margin.bottom);
     
-        vis.text_x = vis.width / 2 + 70;
-        vis.text_y = vis.height / 4 + 30;
+        vis.text_x = vis.width / 2 - 90;
+        vis.text_y = vis.height / 4 + 5;
     
         vis.svg.select("#info-title")
             .attr('x', vis.width / 2)
@@ -154,51 +191,68 @@ class textChart {
     
         vis.svg.select("#info0")
             .attr('x', vis.text_x)
-            .attr('y', vis.text_y);
+            .attr('y', vis.text_y)
+            .attr('dy', 30);
         
         vis.svg.select("#info1")
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
-            .attr('dy', 20);
+            .attr('dy', 50);
     
         vis.svg.select("#info2")
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
-            .attr('dy', 40);
+            .attr('dy', 70);
     
         vis.svg.select("#info3")
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
-            .attr('dy', 60);
+            .attr('dy', 90);
         
         let info3_width = vis.svg.select('#info3').node().getBoundingClientRect().width;
         vis.svg.select("#flag")
-            .attr('x', vis.text_x + info3_width + 10)
-            .attr('y', vis.text_y + 60 - 4);
+            .attr('x', vis.text_x + info3_width + 5)
+            .attr('y', vis.text_y + 90 - 13);
     
         vis.svg.select("#info4")
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
-            .attr('dy', 80);
+            .attr('dy', 110);
     
         vis.svg.select("#info5")
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
-            .attr('dy', 100);
+            .attr('dy', 130);
     
         vis.svg.select("#info6")
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
-            .attr('dy', 120);
+            .attr('dy', 150);
         
-        vis.svg.select('#wiki-button')
+        vis.svg.select("#info7")
             .attr('x', vis.text_x)
             .attr('y', vis.text_y)
-            .attr('dy', 170);
+            .attr('dy', 220);
+        
+        vis.wiki_button.selectAll('rect')
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y + 169);
+        vis.wiki_button.selectAll('text')
+            .attr('x', vis.text_x + 5)
+            .attr('y', vis.text_y)
+            .attr('dy', 185);
+
+        vis.forbes_button.selectAll('rect')
+            .attr('x', vis.text_x)
+            .attr('y', vis.text_y + 239);
+        vis.forbes_button.append('text')
+            .attr('x', vis.text_x + 5)
+            .attr('y', vis.text_y)
+            .attr('dy', 255);
 
         vis.bilimage
-            .attr('x', vis.width / 2 - 70 - 250)
-            .attr('y', vis.height / 4 + 20);
+            .attr('x', vis.width / 2 - 420)
+            .attr('y', vis.height / 4 - 25);
     }
     
 
@@ -260,7 +314,12 @@ class textChart {
                 "The " + vis.brank + suffix + " richest billionaire, with a net worth of " + vis.bnw + " billion!"
             );
             let child_type = "";
+            let no_child = "";
             switch (vis.bnumchild) {
+                case "":
+                    no_child = "no";
+                    child_type = "children";
+                    break;
                 case "1":
                     child_type = "child";
                     break;
@@ -268,7 +327,7 @@ class textChart {
                     child_type = "children";
             }
             document.getElementById('info2').textContent = (
-                vis.bage + " years old, " + vis.bmarital + ", and has " + vis.bnumchild + " " + child_type + "."
+                vis.bage + " years old, " + vis.bmarital.toLowerCase() + ", and has " + vis.bnumchild + no_child + " " + child_type + "."
             );
             fetch("https://restcountries.com/v3.1/name/" + vis.bcountry + "?fullText=true")
                 .then(response => response.json())
@@ -279,13 +338,14 @@ class textChart {
             document.getElementById('info3').textContent = (
                 "Living in " + vis.bres + ", and is a citizen of " + vis.bcountry + "."
             )
-            document.getElementById('info4').textContent = "";
-            document.getElementById('info5').textContent = "";
-            document.getElementById('info6').textContent = "Want to learn more? Visit their wiki below!";
 
             let info3_width = vis.svg.select('#info3').node().getBoundingClientRect().width;
             vis.svg.select("#flag")
                 .attr('x', vis.text_x + info3_width + 10);
+            
+            document.getElementById('info4').textContent = "";
+            document.getElementById('info5').textContent = "";
+            document.getElementById('info6').textContent = "Want to learn more details? Visit their wiki below...";
 
             let names = vis.bname.split(" ");
             console.log(names[0]);
@@ -294,6 +354,15 @@ class textChart {
 
             vis.svg.select('#wiki-button')
                 .attr('href', wiki_link)
+                .style('text-decoration', 'none')
+                .selectAll('text')
+                .style('text-decoration', 'none');
+            
+            document.getElementById('info7').textContent = "... or visit their Forbes page (where our data is sourced)!"
+            let forbes_link = "https://www.forbes.com/profile/" + cleanName(vis.bname) + "/";
+
+            vis.svg.select('#forbes-button')
+                .attr('href', forbes_link)
                 .style('text-decoration', 'none')
                 .selectAll('text')
                 .style('text-decoration', 'none');
