@@ -167,7 +167,7 @@ window.WealthComparison = class WealthComparison {
         // reposition Clippy relative to the "Compare Wealth" button
         const generateBtn = document.getElementById("generate-btn");
         if (generateBtn) {
-            this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: 60, offsetY: -450 });
+            this.clippyWealth.showRelativeToElement(generateBtn, { offsetX: -218, offsetY: -340 });
         } else {
             this.clippyWealth.show();
         }
