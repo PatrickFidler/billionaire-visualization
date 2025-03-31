@@ -64,6 +64,6 @@ function fade(){
     overlay.style.backgroundColor = "rgba(0, 0, 0, 1)";
 
     overlay.addEventListener("transitionend", () => {
-        window.location.href = "index.html";
+        window.location.href = "main.html";
     }, { once: true });
 }
