@@ -414,7 +414,7 @@ window.WealthComparison = class WealthComparison {
             },
             // Selected billionaire
             {
-                name: selectedBillionaireData.name + "(Your Selected Billionaire)",
+                name: selectedBillionaireData.name + " (Your Selected Billionaire)",
                 wealth: selectedBillionaireData.wealth,
                 color: "red",
                 fill: "none"
