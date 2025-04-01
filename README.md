@@ -2,6 +2,7 @@
 A creative visualization of a billionaire dataset, using D3.js. Select a billionaire on the map to unlock the scroll functionality (buttons on the bottom right). Click down to continue learning more about your chosen billionaire, or hit restart to start learning about someone brand new!
 
 View it here: https://patrickfidler.github.io/billionaire-visualization/
+
 Demo Video: https://drive.google.com/file/d/102uM3kc8_7gr4hDzDjyjnzwDk1pKmcwE/view?usp=drive_link
 
 ## Intro:
